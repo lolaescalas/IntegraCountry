@@ -1,5 +1,7 @@
 package modelo.solicitudes;
 
-public class Reclamo {
+import modelo.abstractas.Solicitud;
+
+public class Reclamo extends Solicitud {
 
 }

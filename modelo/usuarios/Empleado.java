@@ -1,5 +1,9 @@
 package modelo.usuarios;
 
-public class Empleado {
+import modelo.abstractas.Usuario;
+
+public class Empleado extends Usuario {
+
+    private int codigoEmpleado;
 
 }

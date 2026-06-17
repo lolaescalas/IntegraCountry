@@ -1,5 +1,7 @@
 package modelo.solicitudes;
 
-public class IncidenteSeguridad {
+import modelo.abstractas.Solicitud;
+
+public class IncidenteSeguridad extends Solicitud {
 
 }
