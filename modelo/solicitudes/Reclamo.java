@@ -1,17 +1,17 @@
 package modelo.solicitudes;
-
+import enums.Prioridad;
 import modelo.abstractas.Solicitud;
 import patrones.state.IEstadoSolicitud;
 
 public class Reclamo extends Solicitud {
 
-    private IEstadoSolicitud estado;
+    privaye Prioridad prioridad;
 
-    public IEstadoSolicitud getEstado() {
-        return estado;
-    }
+    public Prioridad getPrioridad() {
+        return prioridad; }
 
-    public void setEstado(IEstadoSolicitud estado) {
-        this.estado = estado;
-    }
+    public void setPrioridad(Prioridad prioridad) {
+         this.prioridad = prioridad; }
+
 }
+

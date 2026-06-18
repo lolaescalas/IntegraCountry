@@ -3,34 +3,20 @@ package modelo.abstractas;
 import java.sql.Date;
 
 public abstract class Usuario {
-
-    private int dni;
     private String nombre;
-    private String apellido;
-    private Date fechaNacimiento;
-    
-    public int getDni() {
-        return dni;
-    }
-    public void setDni(int dni) {
-        this.dni = dni;
-    }
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
+    private String dni;
+    private String email;
+    private String telefono;
+
+    public Usuario(String nombre, String dni, String email, String telefono) {
         this.nombre = nombre;
+        this.dni = dni;
+        this.email = email;
+        this.telefono = telefono;
     }
-    public String getApellido() {
-        return apellido;
-    }
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
+
+    public String getNombre() { return nombre; }
+    public String getDni() { return dni; }
+    public String getEmail() { return email; }
+    public String getTelefono() { return telefono; }
 }
