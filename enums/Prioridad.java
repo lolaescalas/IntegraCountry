@@ -1,5 +1,5 @@
-public enum Prioridad {
+package enums;
 
-    
+public enum Prioridad {
     BAJA, MEDIA, ALTA
 }
