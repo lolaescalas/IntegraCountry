@@ -5,7 +5,7 @@ import patrones.state.IEstadoSolicitud;
 
 public class Reclamo extends Solicitud {
 
-    privaye Prioridad prioridad;
+    private Prioridad prioridad;
 
     public Prioridad getPrioridad() {
         return prioridad; }
