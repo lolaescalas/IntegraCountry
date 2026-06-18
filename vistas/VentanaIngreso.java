@@ -6,5 +6,6 @@ public class VentanaIngreso extends JFrame{
     setTitle("Ingreso sistema");
     setSize(300, 200);
     setVisible(true);
+
     }
 }
