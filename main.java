@@ -6,7 +6,7 @@ public class main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             VentanaIngreso ventana = new VentanaIngreso();
-            ventana.setVisible(true); // La hacemos visible
+            ventana.setVisible(true); 
         });
     }
 }
