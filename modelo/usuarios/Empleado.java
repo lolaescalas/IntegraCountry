@@ -14,6 +14,4 @@ public class Empleado extends Usuario {
     public int getCodigoEmpleado() {
         return codigoEmpleado;
     }
-
 }
-
