@@ -7,7 +7,12 @@ import repositorio.RepositorioEmpleados;
 
 public class AsignadorEmpleado {
 
+    private RepositorioEmpleados repositorio;
     private int indiceActual = 0;
+
+    public AsignadorEmpleado() {
+        this.repositorio = new RepositorioEmpleados();
+    }
 
     public Empleado obtenerSiguienteEmpleado() {
         List<Empleado> empleados = RepositorioEmpleados.getEmpleados();
