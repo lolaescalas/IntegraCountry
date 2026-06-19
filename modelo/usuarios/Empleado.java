@@ -11,7 +11,9 @@ public class Empleado extends Usuario {
         this.codigoEmpleado = codigoEmpleado;
     }
 
-    public int getCodigoEmpelado { return codigoEmpleado;}
+    public int getCodigoEmpleado() {
+        return codigoEmpleado;
+    }
 
 }
 
