@@ -10,7 +10,7 @@ public class AsignadorEmpleado {
     private RepositorioEmpleados repositorio;
     private int indiceActual = 0;
 
-    public AsignadorEmpleado() {
+    public AsignadorEmpleado(RepositorioEmpleados repositorio) {
         this.repositorio = repositorio;
     }
 

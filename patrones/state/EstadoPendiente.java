@@ -11,7 +11,8 @@ public class EstadoPendiente implements IEstadoSolicitud {
 
     @Override
     public String asignarEmpleado(Solicitud s) {
-        return "La solicitud esta pendiente, no hay un empleado asignado. Avanzar con la solicitud para asignar empleado.";
+        return "La solicitud esta pendiente, no hay un empleado asignado. Avanzar con la solicitud para asignar empleado."; +
+        "Avance la solicitud para ponerla en curso y asignar empleado.";
     }
 
     @Override

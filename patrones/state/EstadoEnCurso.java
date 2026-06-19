@@ -5,7 +5,9 @@ import servicio.AsignadorEmpleado;
 
 public class EstadoEnCurso implements IEstadoSolicitud {
 
-    private AsignadorEmpleado asignador;
+    public EstadoEnCurso() {
+        
+    }
 
     @Override
     public String obtenerNombre() {
@@ -14,17 +16,13 @@ public class EstadoEnCurso implements IEstadoSolicitud {
 
     @Override
     public String asignarEmpleado(Solicitud s) {
-        s.setEmpleado(
-            asignador.obtenerSiguienteEmpleado()
-        );
-        return "Se asigno el empleado.";
+        s.setEmpleado(s.getAsignador().obtenerSiguienteEmpleado());
+        return "Se asigno el empleado: " + s.getEmpleado().getNombre();
     }
 
-    @Override
+        @Override
     public String avanzarSolicitud(Solicitud s) {
-        return "La solicitud esta resuelta";
-    }
-
-    public EstadoEnCurso() {
+        s.setEstado(new EstadoResuelta());
+        return "La solicitud ahora esta resuelta";
     }
 }

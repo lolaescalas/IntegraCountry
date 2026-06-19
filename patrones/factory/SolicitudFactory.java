@@ -1,8 +1,8 @@
 package patrones.factory;
 
-import enums.NivelRiesgo;
-import enums.Prioridad;
-import enums.TipoServicio;
+import modelo.enums.NivelRiesgo;
+import modelo.enums.Prioridad;
+import modelo.enums.TipoServicio;
 import modelo.abstractas.Solicitud;
 import modelo.solicitudes.IncidenteSeguridad;
 import modelo.solicitudes.Reclamo;

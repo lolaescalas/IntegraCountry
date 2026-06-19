@@ -1,4 +1,4 @@
-package fachada;
+package patrones;
 
 import enums.Prioridad;
 import modelo.abstractas.Solicitud;
