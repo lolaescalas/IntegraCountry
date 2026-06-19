@@ -20,9 +20,18 @@ public class Ingreso {
         this.destino = destino;
     }
 
-    public LocalDate getFecha() { return fecha; }
-    public String getHora() { return hora; }
-    public String getTipo() { return tipo; }
-    public Usuario getPersona() { return persona; }
-    public String getDestino() { return destino; }
+    public LocalDate getFecha() { 
+        return fecha; }
+        
+    public String getHora() {
+         return hora; }
+
+    public String getTipo() {
+         return tipo; }
+
+    public Usuario getPersona() {
+         return persona; }
+         
+    public String getDestino() {
+         return destino; }
 }

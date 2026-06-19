@@ -24,7 +24,7 @@ public class RepositorioEmpleados {
     new Empleado(15, "Agustin Vega", "30666777", "agustin.vega@barrio.com", "1130666777")
 );
 
-    public static List<Empleado> getEmpleados() {
+    public List<Empleado> getEmpleados() {
         return empleados;
     }
 }

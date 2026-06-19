@@ -12,6 +12,6 @@ public class Lote {
 
     public int getNumero() { return numero;}
     public String getEstado() {return estado;}
-    public void SetEstado(String estado) {this.estado = estado; }
+    public void setEstado(String estado) {this.estado = estado; }
 
 }

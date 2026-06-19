@@ -14,7 +14,7 @@ public class Inquilino extends Usuario {
         this.lote = lote;
     }
 
-    public int codigoInquilino() { return codigoInquilino; }
+    public int getCodigoInquilino() { return codigoInquilino; }
     public Lote getLote() { return lote; }
 
 }
