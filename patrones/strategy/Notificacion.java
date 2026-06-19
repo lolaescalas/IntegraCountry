@@ -1,7 +1,8 @@
 package patrones.strategy;
 import java.time.LocalDate;
+import patrones.observer.IObservador;
 
-public class Notificacion {
+public class Notificacion implements IObservador{
     
     private String mensaje;
     private LocalDate fecha;
@@ -16,6 +17,7 @@ public class Notificacion {
         this.canal = canal;
     }
 
+    @Override
     public void actualizar(String msj) {
         this.mensaje = msj;
         this.fecha = LocalDate.now();
