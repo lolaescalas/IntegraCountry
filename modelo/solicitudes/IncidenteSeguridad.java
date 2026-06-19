@@ -1,5 +1,5 @@
 package modelo.solicitudes;
-import enums.NivelRiesgo;
+import modelo.enums.NivelRiesgo;
 import modelo.abstractas.Solicitud;
 import servicio.AsignadorEmpleado;
 

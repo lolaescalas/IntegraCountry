@@ -1,6 +1,6 @@
 package modelo.solicitudes;
 
-import enums.TipoServicio;
+import modelo.enums.TipoServicio;
 import modelo.abstractas.Solicitud;
 import servicio.AsignadorEmpleado;
 
