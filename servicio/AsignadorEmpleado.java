@@ -11,11 +11,11 @@ public class AsignadorEmpleado {
     private int indiceActual = 0;
 
     public AsignadorEmpleado() {
-        this.repositorio = new RepositorioEmpleados();
+        this.repositorio = repositorio;
     }
 
     public Empleado obtenerSiguienteEmpleado() {
-        List<Empleado> empleados = RepositorioEmpleados.getEmpleados();
+        List<Empleado> empleados = repositorio.getEmpleados();
 
         Empleado empleado = empleados.get(indiceActual);
 
@@ -24,3 +24,4 @@ public class AsignadorEmpleado {
         return empleado;
     }
 }
+
