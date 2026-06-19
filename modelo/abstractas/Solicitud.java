@@ -15,7 +15,7 @@ public abstract class Solicitud implements IObservable {
     private IEstadoSolicitud estado;
     private Empleado empleado;
     private AsignadorEmpleado asignador;
-    private List<IObservable> observadores = new ArrayList<>();
+    private List<IObservador> observadores = new ArrayList<>();
 
 
     public Solicitud(AsignadorEmpleado asignador) {
