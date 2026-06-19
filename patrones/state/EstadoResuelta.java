@@ -10,7 +10,7 @@ public class EstadoResuelta implements IEstadoSolicitud {
     }
 
     @Override
-    public String manejarSolicitud(Solicitud s) {
+    public String avanzarSolicitud(Solicitud s) {
         return "La solicitud ya esta resuelta";
     }
 

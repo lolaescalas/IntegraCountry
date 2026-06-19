@@ -6,5 +6,5 @@ public interface IEstadoSolicitud {
 
     String obtenerNombre();
     String asignarEmpleado(Solicitud s);
-    String manejarSolicitud(Solicitud s);
+    String avanzarSolicitud(Solicitud s);
 }

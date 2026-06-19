@@ -1,9 +1,11 @@
 package patrones.state;
 
 import modelo.abstractas.Solicitud;
+import servicio.AsignadorEmpleado;
 
 public class EstadoEnCurso implements IEstadoSolicitud {
 
+    private AsignadorEmpleado asignador;
 
     @Override
     public String obtenerNombre() {
@@ -12,12 +14,14 @@ public class EstadoEnCurso implements IEstadoSolicitud {
 
     @Override
     public String asignarEmpleado(Solicitud s) {
-        s.setEmpleado(empleado);
-        return "Se asigno el empleado" + empleado;
+        s.setEmpleado(
+            asignador.obtenerSiguienteEmpleado()
+        );
+        return "Se asigno el empleado.";
     }
 
     @Override
-    public String manejarSolicitud(Solicitud s) {
+    public String avanzarSolicitud(Solicitud s) {
         return "La solicitud esta resuelta";
     }
 

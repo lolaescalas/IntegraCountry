@@ -1,5 +1,6 @@
-package enums;
+package modelo.enums;
 
 public enum Prioridad {
+
     BAJA, MEDIA, ALTA
 }
