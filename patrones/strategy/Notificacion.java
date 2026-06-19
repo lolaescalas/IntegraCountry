@@ -18,8 +18,9 @@ public class Notificacion {
 
     public void actualizar(String msj) {
         this.mensaje = msj;
-        this.fecha = LocalDate.now();
-        this.canal.enviar(this.mensaje);}
+        thi s.fecha = LocalDate.now();
+        this.canal.enviar(this.mensaje);
+    }
     
     public String getMensaje() { 
         return mensaje; 

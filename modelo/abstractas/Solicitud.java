@@ -4,7 +4,7 @@ import modelo.usuarios.Empleado;
 import patrones.state.IEstadoSolicitud;
 
 public abstract class Solicitud {
-
+    
     private IEstadoSolicitud estado;
     private Empleado empleado;
 

@@ -3,4 +3,15 @@ package modelo.espacios;
 public class Lote {
 
     private int numero;
+    private String estado;
+
+    public Lote(int numero, String estado) {
+        this.numero = numero;
+        this.estado = estado;
+    }
+
+    public int getNumero() { return numero;}
+    public String getEstado() {return estado;}
+    public void SetEstado(String estado) {this.estado = estado; }
+
 }
