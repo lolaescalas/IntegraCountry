@@ -1,6 +1,6 @@
-package patrones;
+package patrones.facade;
 
-import enums.Prioridad;
+import modelo.enums.Prioridad;
 import modelo.abstractas.Solicitud;
 import modelo.abstractas.Usuario;
 import modelo.espacios.Barrio;
