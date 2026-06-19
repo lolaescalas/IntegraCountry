@@ -17,7 +17,8 @@ public class EstadoPendiente implements IEstadoSolicitud {
     @Override
     public String avanzarSolicitud(Solicitud s) {
         s.setEstado(new EstadoEnCurso());
-        return "La solicitud ahora esta en curso";
+        String res = s.getEstado().asignarEmpleado(s);
+        return "La solicitud ahora esta en curso" + res ;
     }
 
 }
