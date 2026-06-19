@@ -1,5 +1,5 @@
 import modelo.enums.Prioridad;
-import fachada.AdministracionFacade;
+import patrones.facade.AdministracionFacade;
 import modelo.abstractas.Solicitud;
 import modelo.espacios.Barrio;
 import modelo.espacios.Lote;
