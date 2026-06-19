@@ -1,7 +1,6 @@
 package modelo.solicitudes;
 import enums.Prioridad;
 import modelo.abstractas.Solicitud;
-import patrones.state.IEstadoSolicitud;
 
 public class Reclamo extends Solicitud {
 

@@ -1,8 +1,7 @@
+package patrones.observer;
+
 public interface IObservable {
-    
-    void agregar(Observador o);
-    void eliminar(Observador o);
-
+    void agregar(IObservador o);
+    void eliminar(IObservador o);
     void notificar();
-
 }

@@ -1,17 +1,12 @@
 package modelo.solicitudes;
+
 import enums.TipoServicio;
 import modelo.abstractas.Solicitud;
-import patrones.state.IEstadoSolicitud;
 
 public class TareaMantenimiento extends Solicitud {
 
-    private IEstadoSolicitud estado;
+    private TipoServicio tipoServicio;
 
-    public IEstadoSolicitud getEstado() {
-        return estado;
-    }
-
-    public void setEstado(IEstadoSolicitud estado) {
-        this.estado = estado;
-    }
+    public TipoServicio getTipoServicio() { return tipoServicio; }
+    public void setTipoServicio(TipoServicio tipoServicio) { this.tipoServicio = tipoServicio; }
 }
