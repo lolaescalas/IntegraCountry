@@ -23,19 +23,26 @@ public class VentanaIngreso extends JFrame {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setPaint(new GradientPaint(0, 0, new Color(30, 58, 138), getWidth(), getHeight(), new Color(15, 23, 42)));
+                //g2.setPaint(new GradientPaint(0, 0, new Color(30, 58, 138), getWidth(), getHeight(), new Color(15, 23, 42)));
+                g2.setPaint(new GradientPaint(
+    0, 0, new Color(255, 183, 77),
+    getWidth(), getHeight(),
+    new Color(255, 138, 101)
+));
                 g2.fillRect(0, 0, getWidth(), getHeight());
+                
             }
         };
         JPanel textos = new JPanel();
         textos.setLayout(new BoxLayout(textos, BoxLayout.Y_AXIS));
         textos.setOpaque(false);
+
         // Logo desde la carpeta recursos (con fondo transparente)
         JLabel marca = new JLabel();
         try {
             java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(new java.io.File("recursos/logo.png"));
             // Escalamos el logo a 300px de ancho manteniendo proporción
-            int ancho = 300;
+            int ancho = 800;
             int alto = img.getHeight() * ancho / img.getWidth();
             Image escalada = img.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
             marca.setIcon(new ImageIcon(escalada));
@@ -48,7 +55,7 @@ public class VentanaIngreso extends JFrame {
         marca.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel slogan = new JLabel("Gestión inteligente para tu barrio");
         slogan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        slogan.setForeground(new Color(148, 163, 184));
+        slogan.setForeground(new Color(30, 58, 138));
         slogan.setAlignmentX(Component.CENTER_ALIGNMENT);
         textos.add(marca);
         textos.add(Box.createRigidArea(new Dimension(0, 10)));
