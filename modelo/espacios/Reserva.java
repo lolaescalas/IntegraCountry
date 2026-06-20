@@ -1,4 +1,5 @@
 package modelo.espacios;
+import interfaces.Cancelable;
 
 public class Reserva implements Cancelable {
 
@@ -12,7 +13,7 @@ public class Reserva implements Cancelable {
         this.fecha = fecha;
         this.horario = horario;
         this.espacio = espacio;
-        this.estado = "ACTIVA";       
+        this.estado = "ACTIVA";
     }
 
     @Override
