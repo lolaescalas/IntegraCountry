@@ -1,12 +1,10 @@
 package patrones.state;
 
 import modelo.abstractas.Solicitud;
-import servicio.AsignadorEmpleado;
 
 public class EstadoEnCurso implements IEstadoSolicitud {
 
-    public EstadoEnCurso() {
-        
+    public EstadoEnCurso() { 
     }
 
     @Override

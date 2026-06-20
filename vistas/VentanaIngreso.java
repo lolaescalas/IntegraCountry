@@ -9,7 +9,7 @@ import patrones.facade.AdministracionFacade;
 
 public class VentanaIngreso extends JFrame {
 
-    private AdministracionFacade fachada; 
+    private AdministracionFacade fachada;
 
     public VentanaIngreso(AdministracionFacade fachada) {
         this.fachada = fachada;
