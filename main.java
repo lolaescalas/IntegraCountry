@@ -4,7 +4,7 @@ import modelo.espacios.Barrio;
 import patrones.facade.AdministracionFacade;
 import vistas.VentanaIngreso;
 
-public class main {
+public class Main {
 
     public static void main(String[] args) {
         
@@ -12,11 +12,11 @@ public class main {
 
         Barrio barrio = new Barrio("Los Robles", "Av. Principal 123");
         AdministracionFacade administracion = new AdministracionFacade(barrio);
-
-               try {
+        
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {}
-
+        
         SwingUtilities.invokeLater(() -> {
             VentanaIngreso login = new VentanaIngreso(administracion);
             login.setVisible(true);
