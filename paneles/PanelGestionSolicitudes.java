@@ -1,85 +1,78 @@
 package paneles;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
+
+import modelo.abstractas.Solicitud;
 import patrones.facade.AdministracionFacade;
+import vistas.UI;
 
 public class PanelGestionSolicitudes extends JPanel {
 
-    private final Color COLOR_FONDO_CENTRAL = new Color(249, 250, 251);
-    private final Color COLOR_PRIMARIO = new Color(79, 70, 229);
-    private final Color COLOR_TEXTO_OSCURO = new Color(15, 23, 42);
-    private AdministracionFacade fachada;
+    private final AdministracionFacade fachada;
+    private DefaultTableModel modelo;
+    private JTable tabla;
+    private List<Solicitud> filas;
 
     public PanelGestionSolicitudes(AdministracionFacade fachada) {
         this.fachada = fachada;
-        setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_FONDO_CENTRAL);
-        setBorder(new EmptyBorder(40, 40, 40, 40));
+        setLayout(new BorderLayout(0, 24));
+        setBackground(UI.FONDO);
+        setBorder(UI.marcoPanel());
 
-        JLabel lblTitulo = new JLabel("Solicitudes y Reclamos");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        lblTitulo.setForeground(COLOR_TEXTO_OSCURO);
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(UI.titulo("Solicitudes y Reclamos"), BorderLayout.WEST);
 
-        JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelTop.setOpaque(false);
-        panelTop.add(lblTitulo);
-
-        String[] columnas = {"ID", "Lote", "Tipo", "Descripción", "Estado Actual"};
-        Object[][] datos = {
-            {"REQ-01", "L-02", "Mantenimiento", "Foco fundido en calle 3", "Pendiente"},
-            {"REQ-02", "L-15", "Reclamo", "Ruido molesto", "En Curso"}
+        String[] cols = {"ID", "Tipo", "Asunto/Descripción", "Empleado", "Estado Actual"};
+        modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { return false; }
         };
-        JTable tabla = new JTable(new DefaultTableModel(datos, columnas));
-        estilizarTabla(tabla);
+        tabla = new JTable(modelo);
 
-        JPanel panelAcciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
-        panelAcciones.setOpaque(false);
-        panelAcciones.add(new JLabel("Cambiar estado de solicitud seleccionada a:"));
-        
-        JComboBox<String> comboEstados = new JComboBox<>(new String[]{"Pendiente", "En Curso", "Resuelta"});
-        JButton btnActualizar = new JButton("Actualizar Estado");
-        estilizarBotonPrimario(btnActualizar);
+        // Barra de acciones: avanzar el estado de la solicitud seleccionada
+        JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        acciones.setOpaque(false);
+        JButton btnAvanzar = UI.boton("Avanzar estado", UI.PRIMARIO);
+        JButton btnRefrescar = UI.boton("Refrescar", UI.TEXTO_SUAVE);
+        acciones.add(new JLabel("Solicitud seleccionada:"));
+        acciones.add(btnAvanzar);
+        acciones.add(btnRefrescar);
 
-        btnActualizar.addActionListener(e -> {
-            int filaSeleccionada = tabla.getSelectedRow();
-            if (filaSeleccionada != -1) {
-                DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-                modelo.setValueAt(comboEstados.getSelectedItem(), filaSeleccionada, 4);
-            } else {
-                JOptionPane.showMessageDialog(this, "Seleccione una solicitud primero.", "Atención", JOptionPane.WARNING_MESSAGE);
-            }
-        });
+        btnAvanzar.addActionListener(e -> avanzar());
+        btnRefrescar.addActionListener(e -> refrescar());
 
-        panelAcciones.add(comboEstados);
-        panelAcciones.add(btnActualizar);
+        add(top, BorderLayout.NORTH);
+        add(UI.tabla(tabla), BorderLayout.CENTER);
+        add(acciones, BorderLayout.SOUTH);
 
-        add(panelTop, BorderLayout.NORTH);
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
-        add(panelAcciones, BorderLayout.SOUTH);
+        refrescar();
     }
 
-    private void estilizarBotonPrimario(JButton btn) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(COLOR_PRIMARIO);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(200, 40));
+    private void avanzar() {
+        int fila = tabla.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una solicitud primero.", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Solicitud s = filas.get(fila);
+        fachada.avanzarSolicitud(s);  // State + Observer disparan aca
+        refrescar();
     }
 
-    private void estilizarTabla(JTable tabla) {
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tabla.setRowHeight(35);
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tabla.getTableHeader().setBackground(Color.WHITE);
-        tabla.getTableHeader().setForeground(COLOR_TEXTO_OSCURO);
-        tabla.setShowVerticalLines(false);
-        tabla.setGridColor(new Color(229, 231, 235));
-        tabla.setSelectionBackground(new Color(224, 231, 255));
-        tabla.setSelectionForeground(COLOR_TEXTO_OSCURO);
+    private void refrescar() {
+        modelo.setRowCount(0);
+        filas = fachada.getSolicitudes();
+        for (Solicitud s : filas) {
+            String detalle = "";
+            String empleado = (s.getEmpleado() != null) ? s.getEmpleado().getNombre() : "-";
+            if (s instanceof modelo.solicitudes.Reclamo r) detalle = r.getAsunto();
+            else if (s instanceof modelo.solicitudes.IncidenteSeguridad i) detalle = i.getDescripcion();
+            modelo.addRow(new Object[]{
+                    "REQ-" + s.getId(), s.getTipoDescripcion(), detalle, empleado, s.getNombreEstado()
+            });
+        }
     }
 }

@@ -1,70 +1,94 @@
 package paneles;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+
+import modelo.abstractas.Usuario;
+import modelo.usuarios.Inquilino;
+import modelo.usuarios.Propietario;
 import patrones.facade.AdministracionFacade;
+import vistas.UI;
 
 public class PanelGestionResidentes extends JPanel {
 
-    private final Color COLOR_FONDO_CENTRAL = new Color(249, 250, 251);
-    private final Color COLOR_PRIMARIO = new Color(79, 70, 229);
-    private final Color COLOR_TEXTO_OSCURO = new Color(15, 23, 42);
-    private AdministracionFacade fachada;
+    private final AdministracionFacade fachada;
+    private DefaultTableModel modelo;
 
     public PanelGestionResidentes(AdministracionFacade fachada) {
         this.fachada = fachada;
-        setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_FONDO_CENTRAL);
-        setBorder(new EmptyBorder(40, 40, 40, 40));
+        setLayout(new BorderLayout(0, 24));
+        setBackground(UI.FONDO);
+        setBorder(UI.marcoPanel());
 
-        // Cabecera
-        JLabel lblTitulo = new JLabel("Gestión de Residentes");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        lblTitulo.setForeground(COLOR_TEXTO_OSCURO);
+        JButton btnNuevo = UI.boton("+ Nuevo Residente", UI.PRIMARIO);
+        btnNuevo.addActionListener(e -> nuevoResidente());
 
-        JButton btnNuevo = new JButton("+ Nuevo Residente");
-        estilizarBotonPrimario(btnNuevo);
-        
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(UI.titulo("Gestión de Residentes"), BorderLayout.WEST);
+        top.add(btnNuevo, BorderLayout.EAST);
 
-        JPanel panelTop = new JPanel(new BorderLayout());
-        panelTop.setOpaque(false);
-        panelTop.add(lblTitulo, BorderLayout.WEST);
-        panelTop.add(btnNuevo, BorderLayout.EAST);
-
-        String[] columnas = {"Lote", "Nombre", "DNI", "Tipo", "Estado"};
-        Object[][] datos = {
-            {"L-01", "Juan Perez", "11222333", "Propietario", "Activo"},
-            {"L-02", "Maria Gomez", "44555666", "Inquilino", "Activo"},
-            {"L-03", "Carlos Lopez", "77888999", "Propietario", "Moroso"}
+        String[] cols = {"Lote", "Nombre", "DNI", "Tipo", "Estado"};
+        modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { return false; }
         };
-        JTable tabla = new JTable(new DefaultTableModel(datos, columnas));
-        estilizarTabla(tabla);
+        JTable tabla = new JTable(modelo);
 
-        add(panelTop, BorderLayout.NORTH);
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        add(top, BorderLayout.NORTH);
+        add(UI.tabla(tabla), BorderLayout.CENTER);
+
+        refrescar();
     }
 
-    private void estilizarBotonPrimario(JButton btn) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(COLOR_PRIMARIO);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(200, 40));
+    // Lee del repositorio a traves de la fachada. CERO datos hardcodeados.
+    private void refrescar() {
+        modelo.setRowCount(0);
+        for (Usuario u : fachada.getResidentes()) {
+            String tipo, lote, estado;
+            if (u instanceof Propietario p) {
+                tipo = "Propietario";
+                lote = "L-0" + p.getLote().getNumero();
+                estado = p.getLote().getEstado();
+            } else if (u instanceof Inquilino i) {
+                tipo = "Inquilino";
+                lote = "L-0" + i.getLote().getNumero();
+                estado = i.getLote().getEstado();
+            } else {
+                tipo = "Residente"; lote = "-"; estado = "-";
+            }
+            modelo.addRow(new Object[]{lote, u.getNombre(), u.getDni(), tipo, estado});
+        }
     }
 
-    private void estilizarTabla(JTable tabla) {
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tabla.setRowHeight(35);
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tabla.getTableHeader().setBackground(Color.WHITE);
-        tabla.getTableHeader().setForeground(COLOR_TEXTO_OSCURO);
-        tabla.setShowVerticalLines(false);
-        tabla.setGridColor(new Color(229, 231, 235));
-        tabla.setSelectionBackground(new Color(224, 231, 255));
-        tabla.setSelectionForeground(COLOR_TEXTO_OSCURO);
+    private void nuevoResidente() {
+        JTextField nombre = new JTextField();
+        JTextField dni = new JTextField();
+        JTextField lote = new JTextField();
+        JComboBox<String> tipo = new JComboBox<>(new String[]{"Propietario", "Inquilino"});
+        Object[] form = {"Nombre:", nombre, "DNI:", dni, "Nro de lote:", lote, "Tipo:", tipo};
+
+        int op = JOptionPane.showConfirmDialog(this, form, "Nuevo Residente", JOptionPane.OK_CANCEL_OPTION);
+        if (op != JOptionPane.OK_OPTION) return;
+        if (nombre.getText().isBlank() || dni.getText().isBlank() || lote.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Complete todos los campos.", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int nroLote;
+        try { nroLote = Integer.parseInt(lote.getText().trim()); }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "El lote debe ser un número.", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        modelo.espacios.Lote l = new modelo.espacios.Lote(nroLote, "Activo");
+        int cod = fachada.getResidentes().size() + 1;
+        Usuario nuevo = "Propietario".equals(tipo.getSelectedItem())
+                ? new Propietario(cod, l, nombre.getText().trim(), dni.getText().trim(), "", "")
+                : new Inquilino(cod, l, nombre.getText().trim(), dni.getText().trim(), "", "");
+
+        fachada.registrarResidente(nuevo);
+        refrescar();
+        JOptionPane.showMessageDialog(this, "Residente registrado correctamente.");
     }
 }

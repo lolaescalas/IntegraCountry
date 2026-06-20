@@ -1,138 +1,110 @@
 package paneles;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+
+import modelo.abstractas.Solicitud;
 import modelo.enums.Prioridad;
+import modelo.solicitudes.Reclamo;
 import patrones.facade.AdministracionFacade;
+import vistas.UI;
 
 public class PanelMisReclamos extends JPanel {
 
-    private final Color COLOR_FONDO_CENTRAL = new Color(249, 250, 251);
-    private final Color COLOR_PRIMARIO = new Color(79, 70, 229);
-    private final Color COLOR_TEXTO_OSCURO = new Color(15, 23, 42);
-
-    private JTextField txtTitulo;
+    private final AdministracionFacade fachada;
+    private JTextField txtAsunto;
     private JTextArea txtDescripcion;
     private JComboBox<String> cmbPrioridad;
-    
-    private AdministracionFacade fachada;
+    private DefaultTableModel modelo;
 
     public PanelMisReclamos(AdministracionFacade fachada) {
         this.fachada = fachada;
-        
-        setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_FONDO_CENTRAL);
-        setBorder(new EmptyBorder(40, 40, 40, 40));
+        setLayout(new BorderLayout(0, 24));
+        setBackground(UI.FONDO);
+        setBorder(UI.marcoPanel());
 
-        JLabel lblTitulo = new JLabel("Mis Reclamos y Solicitudes");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        lblTitulo.setForeground(COLOR_TEXTO_OSCURO);
+        // ----- Formulario (tarjeta) -----
+        JPanel form = UI.card(new GridBagLayout());
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(8, 8, 8, 8);
+        g.anchor = GridBagConstraints.WEST;
+        g.fill = GridBagConstraints.HORIZONTAL;
 
-        JPanel panelFormulario = new JPanel(new BorderLayout(10, 10));
-        panelFormulario.setBackground(Color.WHITE);
-        panelFormulario.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(229, 231, 235), 1),
-                new EmptyBorder(20, 20, 20, 20)
-        ));
-
-        JPanel panelFila1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
-        panelFila1.setOpaque(false);
-        
-        Font fontLabel = new Font("Segoe UI", Font.BOLD, 14);
-        JLabel lblAsunto = new JLabel("Asunto/Título:"); lblAsunto.setFont(fontLabel);
-        txtTitulo = new JTextField(25);
-        
-        JLabel lblPrioridad = new JLabel("Prioridad:"); lblPrioridad.setFont(fontLabel);
+        txtAsunto = new JTextField(22);
         cmbPrioridad = new JComboBox<>(new String[]{"Baja", "Media", "Alta"});
-        
-        panelFila1.add(lblAsunto); panelFila1.add(txtTitulo);
-        panelFila1.add(Box.createHorizontalStrut(20));
-        panelFila1.add(lblPrioridad); panelFila1.add(cmbPrioridad);
+        txtDescripcion = new JTextArea(4, 30);
+        txtDescripcion.setLineWrap(true);
+        txtDescripcion.setWrapStyleWord(true);
+        txtDescripcion.setBorder(BorderFactory.createLineBorder(UI.BORDE));
 
-        JPanel panelFila2 = new JPanel(new BorderLayout(5, 5));
-        panelFila2.setOpaque(false);
-        JLabel lblDesc = new JLabel("Descripción del problema:"); lblDesc.setFont(fontLabel);
-        txtDescripcion = new JTextArea(4, 40);
-        txtDescripcion.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        panelFila2.add(lblDesc, BorderLayout.NORTH);
-        panelFila2.add(new JScrollPane(txtDescripcion), BorderLayout.CENTER);
+        g.gridx = 0; g.gridy = 0; form.add(etiqueta("Asunto:"), g);
+        g.gridx = 1; form.add(txtAsunto, g);
+        g.gridx = 2; form.add(etiqueta("Prioridad:"), g);
+        g.gridx = 3; form.add(cmbPrioridad, g);
 
-        JButton btnEnviar = new JButton("Enviar Reclamo");
-        estilizarBotonPrimario(btnEnviar);
+        g.gridx = 0; g.gridy = 1; g.anchor = GridBagConstraints.NORTHWEST;
+        form.add(etiqueta("Descripción:"), g);
+        g.gridx = 1; g.gridwidth = 3; g.fill = GridBagConstraints.BOTH;
+        form.add(new JScrollPane(txtDescripcion), g);
 
-        btnEnviar.addActionListener(e -> {
-            String asunto = txtTitulo.getText();
-            String descripcion = txtDescripcion.getText();
-            String seleccionPrioridad = (String) cmbPrioridad.getSelectedItem();
-            
-            Prioridad prioridadEnum = Prioridad.BAJA;
-            if ("Media".equals(seleccionPrioridad)) prioridadEnum = Prioridad.MEDIA;
-            if ("Alta".equals(seleccionPrioridad)) prioridadEnum = Prioridad.ALTA;
+        JButton btnEnviar = UI.boton("Enviar Reclamo", UI.PRIMARIO);
+        btnEnviar.addActionListener(e -> enviar());
+        g.gridx = 3; g.gridy = 2; g.gridwidth = 1; g.fill = GridBagConstraints.NONE;
+        g.anchor = GridBagConstraints.EAST;
+        form.add(btnEnviar, g);
 
-            if (asunto.trim().isEmpty() || descripcion.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, complete el asunto y la descripción.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+        JPanel norte = new JPanel(new BorderLayout(0, 16));
+        norte.setOpaque(false);
+        norte.add(UI.titulo("Mis Reclamos y Solicitudes"), BorderLayout.NORTH);
+        norte.add(form, BorderLayout.CENTER);
 
-            try {
-                this.fachada.gestionarReclamo(asunto, descripcion, prioridadEnum);
-                
-                JOptionPane.showMessageDialog(this, "Reclamo registrado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                
-                txtTitulo.setText(""); 
-                txtDescripcion.setText("");
-                cmbPrioridad.setSelectedIndex(0);
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al registrar el reclamo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelBoton.setOpaque(false);
-        panelBoton.add(btnEnviar);
-
-        panelFormulario.add(panelFila1, BorderLayout.NORTH);
-        panelFormulario.add(panelFila2, BorderLayout.CENTER);
-        panelFormulario.add(panelBoton, BorderLayout.SOUTH);
-
-        JPanel panelNorte = new JPanel(new BorderLayout(0, 20));
-        panelNorte.setOpaque(false);
-        panelNorte.add(lblTitulo, BorderLayout.NORTH);
-        panelNorte.add(panelFormulario, BorderLayout.CENTER);
-
-        String[] columnas = {"ID", "Asunto", "Fecha", "Prioridad", "Estado Actual"};
-        Object[][] datos = {
-            {"REQ-02", "Ruido molesto", "19/06/2026", "Media", "En Curso"},
-            {"REQ-05", "Poda de árbol frontal", "10/05/2026", "Baja", "Resuelta"}
+        // ----- Tabla -----
+        String[] cols = {"ID", "Asunto", "Fecha", "Prioridad", "Estado Actual"};
+        modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { return false; }
         };
-        JTable tabla = new JTable(new DefaultTableModel(datos, columnas));
-        estilizarTabla(tabla);
+        JTable tabla = new JTable(modelo);
 
-        add(panelNorte, BorderLayout.NORTH);
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        add(norte, BorderLayout.NORTH);
+        add(UI.tabla(tabla), BorderLayout.CENTER);
+
+        refrescar();
     }
 
-    private void estilizarBotonPrimario(JButton btn) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(COLOR_PRIMARIO);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(180, 40));
+    private JLabel etiqueta(String t) {
+        JLabel l = new JLabel(t); l.setFont(UI.BOLD); return l;
     }
 
-    private void estilizarTabla(JTable tabla) {
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tabla.setRowHeight(35);
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tabla.getTableHeader().setBackground(Color.WHITE);
-        tabla.getTableHeader().setForeground(COLOR_TEXTO_OSCURO);
-        tabla.setShowVerticalLines(false);
-        tabla.setGridColor(new Color(229, 231, 235));
-        tabla.setSelectionBackground(new Color(224, 231, 255));
-        tabla.setSelectionForeground(COLOR_TEXTO_OSCURO);
+    private void enviar() {
+        String asunto = txtAsunto.getText().trim();
+        String desc = txtDescripcion.getText().trim();
+        if (asunto.isEmpty() || desc.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete asunto y descripción.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Prioridad p = switch ((String) cmbPrioridad.getSelectedItem()) {
+            case "Media" -> Prioridad.MEDIA;
+            case "Alta"  -> Prioridad.ALTA;
+            default       -> Prioridad.BAJA;
+        };
+        fachada.gestionarReclamo(asunto, desc, p);   // crea, notifica (Observer) y guarda en repo
+        txtAsunto.setText("");
+        txtDescripcion.setText("");
+        cmbPrioridad.setSelectedIndex(0);
+        refrescar();
+        JOptionPane.showMessageDialog(this, "Reclamo registrado correctamente.");
+    }
+
+    private void refrescar() {
+        modelo.setRowCount(0);
+        for (Solicitud s : fachada.getSolicitudes()) {
+            if (s instanceof Reclamo r) {
+                modelo.addRow(new Object[]{
+                        "REQ-" + r.getId(), r.getAsunto(), r.getFecha(),
+                        r.getPrioridad(), r.getNombreEstado()
+                });
+            }
+        }
     }
 }
