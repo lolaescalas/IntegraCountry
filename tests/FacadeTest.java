@@ -7,7 +7,7 @@ import modelo.abstractas.Usuario;
 import patrones.facade.AdministracionFacade;
 
 public class FacadeTest {
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         Barrio barrio = new Barrio("Los Aromos", "Av 1");
         barrio.agregarLote(new Lote(1, "Activo"));
         barrio.agregarLote(new Lote(2, "Activo"));
