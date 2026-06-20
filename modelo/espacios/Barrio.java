@@ -1,6 +1,7 @@
 package modelo.espacios;
 import java.util.ArrayList;
 import java.util.List;
+
 public class Barrio {
     private String nombre;
     private String direccion;
@@ -14,4 +15,8 @@ public class Barrio {
     public String getNombre() { return nombre; }
     public String getDireccion() { return direccion; }
     public List<Lote> getLotes() { return lotes; }
+
+    public Barrio(String nombre) {
+        this.nombre = nombre;
+    }
 }

@@ -1,6 +1,7 @@
 package patrones.strategy;
 import java.time.LocalDate;
 import patrones.observer.IObservador;
+
 public class Notificacion implements IObservador {
     private String mensaje;
     private LocalDate fecha;

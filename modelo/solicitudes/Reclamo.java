@@ -2,6 +2,7 @@ package modelo.solicitudes;
 import modelo.enums.Prioridad;
 import modelo.abstractas.Solicitud;
 import servicio.AsignadorEmpleado;
+
 public class Reclamo extends Solicitud {
     private Prioridad prioridad;
     private String asunto;

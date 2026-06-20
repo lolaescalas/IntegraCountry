@@ -2,6 +2,7 @@ package modelo.solicitudes;
 import modelo.enums.TipoServicio;
 import modelo.abstractas.Solicitud;
 import servicio.AsignadorEmpleado;
+
 public class TareaMantenimiento extends Solicitud {
     private TipoServicio tipoServicio;
     public TareaMantenimiento(AsignadorEmpleado asignador, TipoServicio tipoServicio) {
