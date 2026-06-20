@@ -54,7 +54,7 @@ public class VentanaIngreso extends JFrame {
         }
         marca.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel slogan = new JLabel("Gestión inteligente para tu barrio");
-        slogan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        slogan.setFont(new Font("Segoe UI", Font.PLAIN, 22));
         slogan.setForeground(new Color(30, 58, 138));
         slogan.setAlignmentX(Component.CENTER_ALIGNMENT);
         textos.add(marca);
