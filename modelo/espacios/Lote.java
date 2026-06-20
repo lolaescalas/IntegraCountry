@@ -12,8 +12,10 @@ public class Lote {
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 
-    // Etiqueta legible para combos y tablas: L-01, L-02...
     public String getEtiqueta() { return String.format("L-%02d", numero); }
 
     @Override public String toString() { return getEtiqueta(); }
+    public Lote(int numero) {
+        this.numero = numero;
+    }
 }

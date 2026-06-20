@@ -19,4 +19,9 @@ public class Barrio {
     public Barrio(String nombre) {
         this.nombre = nombre;
     }
+    public Barrio(String nombre, String direccion, List<Lote> lotes) {
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.lotes = lotes;
+    }
 }
