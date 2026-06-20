@@ -9,7 +9,6 @@ public class StrategyTest {
 
     public static void main(String[] args) {
 
-        System.out.println("=== TEST STRATEGY ===");
 
         Notificacion notificacion =
                 new Notificacion(new CanalEmail());
@@ -46,7 +45,5 @@ public class StrategyTest {
         System.out.println("Fecha:");
         System.out.println(notificacion.getFecha());
 
-        System.out.println();
-        System.out.println("=== FIN TEST STRATEGY ===");
     }
 }
