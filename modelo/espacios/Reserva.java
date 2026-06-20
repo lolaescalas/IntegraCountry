@@ -15,7 +15,6 @@ public class Reserva {
         this.estado = "ACTIVA";       
     }
 
-    @Override
     public void cancelar() {
         this.estado = "CANCELADA";
         this.espacio.setDisponible(true);

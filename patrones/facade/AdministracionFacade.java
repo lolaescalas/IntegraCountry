@@ -1,10 +1,10 @@
 package patrones.facade;
 
 import modelo.enums.Prioridad;
-import modelo.abstractas.Solicitud;
 import modelo.abstractas.Usuario;
 import modelo.espacios.Barrio;
 import modelo.espacios.Ingreso;
+import modelo.solicitudes.Reclamo;
 import patrones.factory.SolicitudFactory;
 import patrones.strategy.CanalInterno;
 import patrones.strategy.Notificacion;
@@ -19,14 +19,16 @@ public class AdministracionFacade {
         this.solicitudFactory = new SolicitudFactory();
     }
 
-    public Solicitud gestionarReclamo(Prioridad prioridad) {
-        Solicitud reclamo = solicitudFactory.crearReclamo(prioridad);
+    public Reclamo gestionarReclamo(String asunto, String descripcion, Prioridad prioridad) {
+        Reclamo reclamo = (Reclamo) solicitudFactory.crearReclamo(prioridad);
+        reclamo.setAsunto(asunto);
+        reclamo.setDescripcion(descripcion);
 
         Notificacion notificacion = new Notificacion(new CanalInterno());
         reclamo.agregar(notificacion);
+        reclamo.getEstado().avanzarSolicitud(reclamo);
 
-        reclamo.getEstado().manejarSolicitud(reclamo);
-
+        System.out.println("[SISTEMA] Nuevo reclamo registrado: " + asunto + " (" + prioridad + ")");
         return reclamo;
     }
 
@@ -35,6 +37,10 @@ public class AdministracionFacade {
         System.out.println("[ACCESO] " + tipo + " registrado: "
                 + persona.getNombre() + " hacia " + destino + " a las " + hora);
         return ingreso;
+    }
+
+    public void solicitarReserva(String espacio, String fecha, String hora) {
+        System.out.println("[RESERVA] Solicitud de reserva: " + espacio + " en " + fecha + " a las " + hora);
     }
 
     public void registrarResidente(Usuario residente) {
