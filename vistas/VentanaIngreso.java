@@ -18,7 +18,6 @@ public class VentanaIngreso extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1, 2));
 
-        // ----- Izquierda con degradado -----
         JPanel izq = new JPanel(new GridBagLayout()) {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -44,7 +43,6 @@ public class VentanaIngreso extends JFrame {
         textos.add(slogan);
         izq.add(textos);
 
-        // ----- Derecha: formulario de login -----
         JPanel der = new JPanel(new GridBagLayout());
         der.setBackground(UI.FONDO);
         JPanel card = new JPanel();
@@ -53,8 +51,8 @@ public class VentanaIngreso extends JFrame {
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(UI.BORDE, 1, true),
                 new EmptyBorder(48, 48, 48, 48)));
-        card.setPreferredSize(new Dimension(460, 540));
-        card.setMaximumSize(new Dimension(460, 540));
+        card.setPreferredSize(new Dimension(460, 500));
+        card.setMaximumSize(new Dimension(460, 500));
 
         JLabel bienv = new JLabel("Bienvenido de nuevo");
         bienv.setFont(new Font("Segoe UI", Font.BOLD, 26));
@@ -72,14 +70,6 @@ public class VentanaIngreso extends JFrame {
         JButton ingresar = UI.boton("Ingresar", UI.PRIMARIO);
         ingresar.setMaximumSize(campo); ingresar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JButton registrarse = new JButton("¿No tenés cuenta? Registrate como residente");
-        registrarse.setFont(UI.BODY);
-        registrarse.setForeground(UI.PRIMARIO);
-        registrarse.setBorderPainted(false);
-        registrarse.setContentAreaFilled(false);
-        registrarse.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        registrarse.setAlignmentX(Component.LEFT_ALIGNMENT);
-
         card.add(bienv);
         card.add(Box.createRigidArea(new Dimension(0, 6)));
         card.add(sub);
@@ -89,14 +79,11 @@ public class VentanaIngreso extends JFrame {
         card.add(etiqueta("CONTRASEÑA")); card.add(Box.createRigidArea(new Dimension(0, 6))); card.add(pass);
         card.add(Box.createRigidArea(new Dimension(0, 28)));
         card.add(ingresar);
-        card.add(Box.createRigidArea(new Dimension(0, 14)));
-        card.add(registrarse);
 
         der.add(card);
         add(izq);
         add(der);
 
-        // ----- Acciones -----
         ingresar.addActionListener(e -> {
             String u = usuario.getText().trim();
             String p = new String(pass.getPassword());
@@ -118,49 +105,6 @@ public class VentanaIngreso extends JFrame {
             dash.setVisible(true);
             dispose();
         });
-
-        registrarse.addActionListener(e -> abrirRegistro());
-    }
-
-    // Formulario de registro de un nuevo residente
-    private void abrirRegistro() {
-        JTextField nombre = new JTextField();
-        JTextField dni = new JTextField();
-        JTextField lote = new JTextField();
-        JTextField username = new JTextField();
-        JPasswordField password = new JPasswordField();
-        Object[] form = {
-                "Nombre completo:", nombre,
-                "DNI:", dni,
-                "Nro de lote:", lote,
-                "Usuario (para login):", username,
-                "Contraseña:", password
-        };
-        int op = JOptionPane.showConfirmDialog(this, form, "Registro de Residente", JOptionPane.OK_CANCEL_OPTION);
-        if (op != JOptionPane.OK_OPTION) return;
-
-        String nom = nombre.getText().trim();
-        String doc = dni.getText().trim();
-        String user = username.getText().trim();
-        String pass = new String(password.getPassword());
-
-        if (nom.isEmpty() || doc.isEmpty() || lote.getText().isBlank() || user.isEmpty() || pass.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Complete todos los campos.", "Atención", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        int nroLote;
-        try { nroLote = Integer.parseInt(lote.getText().trim()); }
-        catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "El lote debe ser un número.", "Atención", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (fachada.existeUsername(user)) {
-            JOptionPane.showMessageDialog(this, "Ese nombre de usuario ya está en uso. Elegí otro.", "Atención", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        fachada.registrarResidente(nom, doc, nroLote, user, pass);
-        JOptionPane.showMessageDialog(this, "Registro exitoso. Ya podés iniciar sesión con tu usuario.", "Listo", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private JLabel etiqueta(String t) {
