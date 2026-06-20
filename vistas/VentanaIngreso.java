@@ -30,9 +30,21 @@ public class VentanaIngreso extends JFrame {
         JPanel textos = new JPanel();
         textos.setLayout(new BoxLayout(textos, BoxLayout.Y_AXIS));
         textos.setOpaque(false);
-        JLabel marca = new JLabel("INTEGRA COUNTRY");
-        marca.setFont(new Font("Segoe UI", Font.BOLD, 46));
-        marca.setForeground(Color.WHITE);
+        // Logo desde la carpeta recursos (con fondo transparente)
+        JLabel marca = new JLabel();
+        try {
+            java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(new java.io.File("recursos/logo.png"));
+            // Escalamos el logo a 300px de ancho manteniendo proporción
+            int ancho = 300;
+            int alto = img.getHeight() * ancho / img.getWidth();
+            Image escalada = img.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+            marca.setIcon(new ImageIcon(escalada));
+        } catch (Exception ex) {
+            // Si no encuentra la imagen, muestra el texto como respaldo
+            marca.setText("INTEGRA COUNTRY");
+            marca.setFont(new Font("Segoe UI", Font.BOLD, 46));
+            marca.setForeground(Color.WHITE);
+        }
         marca.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel slogan = new JLabel("Gestión inteligente para tu barrio");
         slogan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
