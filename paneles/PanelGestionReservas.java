@@ -29,6 +29,10 @@ public class PanelGestionReservas extends JPanel {
         String[] cols = {"ID", "Espacio", "Fecha", "Hora", "Solicitante", "Estado"};
         modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         tabla = new JTable(modelo);
+        // Garantiza que se pueda seleccionar una fila
+        tabla.setRowSelectionAllowed(true);
+        tabla.setColumnSelectionAllowed(false);
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         acciones.setOpaque(false);
@@ -50,7 +54,7 @@ public class PanelGestionReservas extends JPanel {
     private void decidir(boolean aceptar) {
         int fila = tabla.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una reserva primero.", "Atención", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione una reserva de la tabla primero.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Reserva r = filas.get(fila);
