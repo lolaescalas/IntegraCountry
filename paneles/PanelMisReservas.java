@@ -4,18 +4,22 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import modelo.espacios.Reserva;
 import patrones.facade.AdministracionFacade;
+import vistas.Sesion;
 import vistas.UI;
 
 public class PanelMisReservas extends JPanel {
 
     private final AdministracionFacade fachada;
+    private final Sesion sesion;
     private JComboBox<String> cmbEspacio, cmbHora;
     private JTextField txtFecha;
     private DefaultTableModel modelo;
 
-    public PanelMisReservas(AdministracionFacade fachada) {
+    public PanelMisReservas(AdministracionFacade fachada, Sesion sesion) {
         this.fachada = fachada;
+        this.sesion = sesion;
         setLayout(new BorderLayout(0, 24));
         setBackground(UI.FONDO);
         setBorder(UI.marcoPanel());
@@ -26,7 +30,6 @@ public class PanelMisReservas extends JPanel {
         cmbHora = new JComboBox<>(new String[]{"10:00", "12:00", "14:00", "16:00", "18:00", "20:00"});
         JButton btn = UI.boton("Solicitar Reserva", UI.PRIMARIO);
         btn.addActionListener(e -> reservar());
-
         form.add(lbl("Espacio:")); form.add(cmbEspacio);
         form.add(lbl("Fecha (DD/MM/AAAA):")); form.add(txtFecha);
         form.add(lbl("Hora:")); form.add(cmbHora);
@@ -38,13 +41,10 @@ public class PanelMisReservas extends JPanel {
         norte.add(form, BorderLayout.CENTER);
 
         String[] cols = {"Espacio", "Fecha", "Hora", "Estado"};
-        modelo = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable tabla = new JTable(modelo);
-
+        modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         add(norte, BorderLayout.NORTH);
-        add(UI.tabla(tabla), BorderLayout.CENTER);
+        add(UI.tabla(new JTable(modelo)), BorderLayout.CENTER);
+        refrescar();
     }
 
     private JLabel lbl(String t) { JLabel l = new JLabel(t); l.setFont(UI.BOLD); return l; }
@@ -54,8 +54,20 @@ public class PanelMisReservas extends JPanel {
             JOptionPane.showMessageDialog(this, "Indique la fecha.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        fachada.solicitarReserva((String) cmbEspacio.getSelectedItem(), txtFecha.getText().trim(), (String) cmbHora.getSelectedItem());
-        modelo.addRow(new Object[]{cmbEspacio.getSelectedItem(), txtFecha.getText().trim(), cmbHora.getSelectedItem(), "Pendiente"});
+        fachada.solicitarReserva((String) cmbEspacio.getSelectedItem(), txtFecha.getText().trim(),
+                (String) cmbHora.getSelectedItem(), sesion.getUsuario());
         txtFecha.setText("");
+        refrescar();
+        JOptionPane.showMessageDialog(this, "Solicitud de reserva enviada. Queda pendiente de aprobación.");
+    }
+
+    // Muestra solo las reservas del residente logueado
+    private void refrescar() {
+        modelo.setRowCount(0);
+        for (Reserva r : fachada.getReservas()) {
+            if (r.getSolicitante() == sesion.getUsuario()) {
+                modelo.addRow(new Object[]{r.getEspacio(), r.getFecha(), r.getHorario(), r.getEstado()});
+            }
+        }
     }
 }

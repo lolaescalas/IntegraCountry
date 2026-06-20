@@ -96,4 +96,3 @@ public final class UI {
     // Marco exterior estandar de cada panel
     public static Border marcoPanel() { return new EmptyBorder(36, 40, 36, 40); }
 }
-

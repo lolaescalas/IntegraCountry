@@ -10,11 +10,13 @@ import patrones.facade.AdministracionFacade;
 public class DashboardGuardia extends JFrame {
 
     private final AdministracionFacade fachada;
+    private final Sesion sesion;
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel centro = new JPanel(cardLayout);
 
-    public DashboardGuardia(AdministracionFacade fachada) {
+    public DashboardGuardia(AdministracionFacade fachada, Sesion sesion) {
         this.fachada = fachada;
+        this.sesion = sesion;
         setTitle("IntegraCountry - Panel de Guardia");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,7 +24,7 @@ public class DashboardGuardia extends JFrame {
 
         centro.setBackground(UI.FONDO);
         centro.add(new PanelRegistroAccesos(fachada), "Accesos");
-        centro.add(new PanelReporteIncidentes(fachada), "Incidentes");
+        centro.add(new PanelReporteIncidentes(fachada, sesion), "Incidentes");
 
         add(Sidebar.construir("PUESTO GUARDIA", "Control de Accesos", this::cerrar,
                 new Sidebar.Item("Registro de Accesos", () -> cardLayout.show(centro, "Accesos")),

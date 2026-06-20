@@ -11,11 +11,13 @@ import patrones.facade.AdministracionFacade;
 public class DashboardResidente extends JFrame {
 
     private final AdministracionFacade fachada;
+    private final Sesion sesion;
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel centro = new JPanel(cardLayout);
 
-    public DashboardResidente(AdministracionFacade fachada) {
+    public DashboardResidente(AdministracionFacade fachada, Sesion sesion) {
         this.fachada = fachada;
+        this.sesion = sesion;
         setTitle("IntegraCountry - Panel de Residente");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,10 +25,12 @@ public class DashboardResidente extends JFrame {
 
         centro.setBackground(UI.FONDO);
         centro.add(new PanelMisExpensas(fachada), "Expensas");
-        centro.add(new PanelMisReservas(fachada), "Reservas");
-        centro.add(new PanelMisReclamos(fachada), "Reclamos");
+        centro.add(new PanelMisReservas(fachada, sesion), "Reservas");
+        centro.add(new PanelMisReclamos(fachada, sesion), "Reclamos");
 
-        add(Sidebar.construir("MI PERFIL", "Lote L-02 | Juan Perez", this::cerrar,
+        String subtitulo = sesion.getUsuario() != null ? sesion.getUsuario().getNombre() : "Residente";
+
+        add(Sidebar.construir("MI PERFIL", subtitulo, this::cerrar,
                 new Sidebar.Item("Mis Expensas", () -> cardLayout.show(centro, "Expensas")),
                 new Sidebar.Item("Mis Reservas", () -> cardLayout.show(centro, "Reservas")),
                 new Sidebar.Item("Mis Reclamos", () -> cardLayout.show(centro, "Reclamos"))

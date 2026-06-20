@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import modelo.abstractas.Usuario;
+import modelo.espacios.Lote;
 import modelo.usuarios.Inquilino;
 import modelo.usuarios.Propietario;
 import patrones.facade.AdministracionFacade;
@@ -30,33 +31,21 @@ public class PanelGestionResidentes extends JPanel {
         top.add(btnNuevo, BorderLayout.EAST);
 
         String[] cols = {"Lote", "Nombre", "DNI", "Tipo", "Estado"};
-        modelo = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable tabla = new JTable(modelo);
-
+        modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         add(top, BorderLayout.NORTH);
-        add(UI.tabla(tabla), BorderLayout.CENTER);
-
+        add(UI.tabla(new JTable(modelo)), BorderLayout.CENTER);
         refrescar();
     }
 
-    // Lee del repositorio a traves de la fachada. CERO datos hardcodeados.
     private void refrescar() {
         modelo.setRowCount(0);
         for (Usuario u : fachada.getResidentes()) {
             String tipo, lote, estado;
             if (u instanceof Propietario p) {
-                tipo = "Propietario";
-                lote = "L-0" + p.getLote().getNumero();
-                estado = p.getLote().getEstado();
+                tipo = "Propietario"; lote = p.getLote().getEtiqueta(); estado = p.getLote().getEstado();
             } else if (u instanceof Inquilino i) {
-                tipo = "Inquilino";
-                lote = "L-0" + i.getLote().getNumero();
-                estado = i.getLote().getEstado();
-            } else {
-                tipo = "Residente"; lote = "-"; estado = "-";
-            }
+                tipo = "Inquilino"; lote = i.getLote().getEtiqueta(); estado = i.getLote().getEstado();
+            } else { tipo = "Residente"; lote = "-"; estado = "-"; }
             modelo.addRow(new Object[]{lote, u.getNombre(), u.getDni(), tipo, estado});
         }
     }
@@ -74,19 +63,27 @@ public class PanelGestionResidentes extends JPanel {
             JOptionPane.showMessageDialog(this, "Complete todos los campos.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int nroLote;
-        try { nroLote = Integer.parseInt(lote.getText().trim()); }
+        int nro;
+        try { nro = Integer.parseInt(lote.getText().trim()); }
         catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "El lote debe ser un número.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        modelo.espacios.Lote l = new modelo.espacios.Lote(nroLote, "Activo");
+        // Si el lote no existe en el barrio, lo creamos y lo sumamos AL BARRIO
+        // (asi guardia tambien lo ve, porque ambos leen del mismo barrio).
+        Lote l = null;
+        for (Lote existente : fachada.getLotes())
+            if (existente.getNumero() == nro) { l = existente; break; }
+        if (l == null) {
+            l = new Lote(nro, "Activo");
+            fachada.getBarrio().agregarLote(l);
+        }
+
         int cod = fachada.getResidentes().size() + 1;
         Usuario nuevo = "Propietario".equals(tipo.getSelectedItem())
                 ? new Propietario(cod, l, nombre.getText().trim(), dni.getText().trim(), "", "")
                 : new Inquilino(cod, l, nombre.getText().trim(), dni.getText().trim(), "", "");
-
         fachada.registrarResidente(nuevo);
         refrescar();
         JOptionPane.showMessageDialog(this, "Residente registrado correctamente.");

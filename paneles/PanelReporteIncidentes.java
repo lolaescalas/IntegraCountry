@@ -8,17 +8,20 @@ import modelo.abstractas.Solicitud;
 import modelo.enums.NivelRiesgo;
 import modelo.solicitudes.IncidenteSeguridad;
 import patrones.facade.AdministracionFacade;
+import vistas.Sesion;
 import vistas.UI;
 
 public class PanelReporteIncidentes extends JPanel {
 
     private final AdministracionFacade fachada;
+    private final Sesion sesion;
     private JTextArea txtDescripcion;
     private JComboBox<String> cmbRiesgo;
     private DefaultTableModel modelo;
 
-    public PanelReporteIncidentes(AdministracionFacade fachada) {
+    public PanelReporteIncidentes(AdministracionFacade fachada, Sesion sesion) {
         this.fachada = fachada;
+        this.sesion = sesion;
         setLayout(new BorderLayout(0, 24));
         setBackground(UI.FONDO);
         setBorder(UI.marcoPanel());
@@ -49,13 +52,9 @@ public class PanelReporteIncidentes extends JPanel {
         norte.add(form, BorderLayout.CENTER);
 
         String[] cols = {"ID", "Fecha", "Riesgo", "Descripción", "Estado"};
-        modelo = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable tabla = new JTable(modelo);
-
+        modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         add(norte, BorderLayout.NORTH);
-        add(UI.tabla(tabla), BorderLayout.CENTER);
+        add(UI.tabla(new JTable(modelo)), BorderLayout.CENTER);
         refrescar();
     }
 
@@ -66,7 +65,7 @@ public class PanelReporteIncidentes extends JPanel {
             return;
         }
         NivelRiesgo nivel = NivelRiesgo.valueOf((String) cmbRiesgo.getSelectedItem());
-        fachada.reportarIncidente(desc, nivel);
+        fachada.reportarIncidente(desc, nivel, sesion.getUsuario());
         txtDescripcion.setText("");
         refrescar();
         JOptionPane.showMessageDialog(this, "Incidente reportado.", "Alerta Emitida", JOptionPane.WARNING_MESSAGE);
@@ -75,11 +74,8 @@ public class PanelReporteIncidentes extends JPanel {
     private void refrescar() {
         modelo.setRowCount(0);
         for (Solicitud s : fachada.getSolicitudes()) {
-            if (s instanceof IncidenteSeguridad i) {
-                modelo.addRow(new Object[]{
-                        "INC-" + i.getId(), i.getFecha(), i.getNivelRiesgo(),
-                        i.getDescripcion(), i.getNombreEstado()
-                });
+            if (s instanceof IncidenteSeguridad i && !i.estaResuelta()) {
+                modelo.addRow(new Object[]{ "INC-" + i.getId(), i.getFecha(), i.getNivelRiesgo(), i.getDescripcion(), i.getNombreEstado() });
             }
         }
     }

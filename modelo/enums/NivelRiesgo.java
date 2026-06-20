@@ -1,6 +1,2 @@
 package modelo.enums;
-
-public enum NivelRiesgo {
-
-    BAJO , MEDIO  , ALTO , CRITICO
-}
+public enum NivelRiesgo { BAJO, MEDIO, ALTO, CRITICO }

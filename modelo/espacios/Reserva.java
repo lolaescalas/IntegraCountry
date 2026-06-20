@@ -1,47 +1,37 @@
 package modelo.espacios;
+
 import interfaces.Cancelable;
+import modelo.abstractas.Usuario;
 
 public class Reserva implements Cancelable {
 
+    private static int contador = 1;
+
+    private int id;
+    private String espacio;
     private String fecha;
     private String horario;
-    private String estado;
-    private EspacioComun espacio;
+    private String estado;     // PENDIENTE, CONFIRMADA, CANCELADA
+    private Usuario solicitante;
 
-
-    public Reserva(String fecha, String horario, EspacioComun espacio) {
-        this.fecha = fecha;
-        this.horario = horario;
+    public Reserva(String espacio, String fecha, String horario, Usuario solicitante) {
+        this.id = contador++;
         this.espacio = espacio;
-        this.estado = "ACTIVA";
-    }
-
-    @Override
-    public void cancelar() {
-        this.estado = "CANCELADA";
-        this.espacio.setDisponible(true);
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public EspacioComun getEspacio() {return espacio; }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
         this.fecha = fecha;
-    }
-
-    public String getHorario() {
-        return horario;
-    }
-
-    public void setHorario(String horario) {
         this.horario = horario;
+        this.solicitante = solicitante;
+        this.estado = "PENDIENTE";
     }
 
+    public void confirmar() { this.estado = "CONFIRMADA"; }
+
+    @Override public void cancelar() { this.estado = "CANCELADA"; }
+
+    public int getId() { return id; }
+    public String getEspacio() { return espacio; }
+    public String getFecha() { return fecha; }
+    public String getHorario() { return horario; }
+    public String getEstado() { return estado; }
+    public Usuario getSolicitante() { return solicitante; }
+    public String getNombreSolicitante() { return solicitante != null ? solicitante.getNombre() : "-"; }
 }
