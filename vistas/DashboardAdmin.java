@@ -80,7 +80,7 @@ public class DashboardAdmin extends JFrame {
         panelMenuLateral.add(Box.createVerticalGlue());
         
         JButton btnSalir = crearBotonMenu("Cerrar Sesión");
-        btnSalir.setForeground(new Color(239, 68, 68)); // Rojo para salir
+        btnSalir.setForeground(new Color(239, 68, 68));
         panelMenuLateral.add(btnSalir);
 
         btnResidentes.addActionListener(e -> cardLayout.show(panelCentral, "Residentes"));

@@ -20,15 +20,15 @@ public class DashboardResidente extends JFrame {
     private CardLayout cardLayout;
     private AdministracionFacade fachada;
 
-    private final Color COLOR_SIDEBAR = new Color(15, 23, 42);       
-    private final Color COLOR_SIDEBAR_HOVER = new Color(30, 41, 59); 
-    private final Color COLOR_FONDO_CENTRAL = new Color(249, 250, 251); 
+    private final Color COLOR_SIDEBAR = new Color(15, 23, 42);
+    private final Color COLOR_SIDEBAR_HOVER = new Color(30, 41, 59);
+    private final Color COLOR_FONDO_CENTRAL = new Color(249, 250, 251);
     private final Color COLOR_TEXTO_CLARO = new Color(248, 250, 252);
 
     public DashboardResidente(AdministracionFacade fachada) {
         this.fachada = fachada;
         setTitle("IntegraCountry - Panel de Residente");
-        setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -78,7 +78,7 @@ public class DashboardResidente extends JFrame {
         panelMenuLateral.add(Box.createVerticalGlue());
         
         JButton btnSalir = crearBotonMenu("Cerrar Sesión");
-        btnSalir.setForeground(new Color(239, 68, 68)); 
+        btnSalir.setForeground(new Color(239, 68, 68));
         panelMenuLateral.add(btnSalir);
 
         btnExpensas.addActionListener(e -> cardLayout.show(panelCentral, "Expensas"));
@@ -88,7 +88,7 @@ public class DashboardResidente extends JFrame {
         btnSalir.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea cerrar sesión?", "Salir", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                this.dispose(); 
+                this.dispose();
                 System.exit(0);
             }
         });
