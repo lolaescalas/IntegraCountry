@@ -6,6 +6,7 @@ import java.awt.*;
 import paneles.PanelMisExpensas;
 import paneles.PanelMisReclamos;
 import paneles.PanelMisReservas;
+import paneles.PanelMisVisitas;
 import patrones.facade.AdministracionFacade;
 
 public class DashboardResidente extends JFrame {
@@ -24,16 +25,18 @@ public class DashboardResidente extends JFrame {
         setLayout(new BorderLayout());
 
         centro.setBackground(UI.FONDO);
-        centro.add(new PanelMisExpensas(fachada), "Expensas");
+        centro.add(new PanelMisExpensas(fachada, sesion), "Expensas");
         centro.add(new PanelMisReservas(fachada, sesion), "Reservas");
         centro.add(new PanelMisReclamos(fachada, sesion), "Reclamos");
+        centro.add(new PanelMisVisitas(fachada, sesion), "Visitas");
 
         String subtitulo = sesion.getUsuario() != null ? sesion.getUsuario().getNombre() : "Residente";
 
         add(Sidebar.construir("MI PERFIL", subtitulo, this::cerrar,
                 new Sidebar.Item("Mis Expensas", () -> cardLayout.show(centro, "Expensas")),
                 new Sidebar.Item("Mis Reservas", () -> cardLayout.show(centro, "Reservas")),
-                new Sidebar.Item("Mis Reclamos", () -> cardLayout.show(centro, "Reclamos"))
+                new Sidebar.Item("Mis Reclamos", () -> cardLayout.show(centro, "Reclamos")),
+                new Sidebar.Item("Autorizar Visitas", () -> cardLayout.show(centro, "Visitas"))
         ), BorderLayout.WEST);
         add(centro, BorderLayout.CENTER);
     }

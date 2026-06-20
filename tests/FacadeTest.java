@@ -1,68 +1,34 @@
 package tests;
-
 import modelo.enums.Prioridad;
 import modelo.espacios.Barrio;
+import modelo.espacios.Lote;
 import modelo.solicitudes.Reclamo;
-import patrones.facade.AdministracionFacade;
 import modelo.abstractas.Usuario;
+import patrones.facade.AdministracionFacade;
 
 public class FacadeTest {
-
     public static void main(String[] args) {
+        Barrio barrio = new Barrio("Los Aromos", "Av 1");
+        barrio.agregarLote(new Lote(1, "Activo"));
+        barrio.agregarLote(new Lote(2, "Activo"));
+        AdministracionFacade admin = new AdministracionFacade(barrio);
 
+        // Registrar residente con la API nueva (devuelve el Usuario creado)
+        Usuario residente = admin.registrarResidente("Juan Perez", "30111222", 1, "juanp", "clave");
+        System.out.println("\nCantidad residentes: " + admin.getResidentes().size());
 
-        Barrio barrio = new Barrio("Los Aromos");
+        Reclamo reclamo = admin.gestionarReclamo("Falla luminaria",
+                "La luz de la calle principal no funciona", Prioridad.ALTA, residente);
+        System.out.println("Cantidad solicitudes: " + admin.getSolicitudes().size());
 
-        AdministracionFacade admin =
-                new AdministracionFacade(barrio);
-
-        Usuario residente = new Usuario(
-                "Juan Perez",
-                "30111222",
-                "juan@gmail.com",
-                "1130011222"
-        ) {};
-
-        admin.registrarResidente(residente);
-
-        System.out.println();
-        System.out.println("Cantidad residentes: "
-                + admin.getResidentes().size());
-
-        Reclamo reclamo = admin.gestionarReclamo(
-                "Falla luminaria",
-                "La luz de la calle principal no funciona",
-                Prioridad.ALTA,
-                residente
-        );
-
-        System.out.println();
-        System.out.println("Cantidad solicitudes: "
-                + admin.getSolicitudes().size());
-
-        // Avanzar reclamo
         admin.avanzarSolicitud(reclamo);
+        System.out.println("Estado actual: " + reclamo.getEstado().obtenerNombre());
 
-        System.out.println(
-                "Estado actual: "
-                + reclamo.getEstado().obtenerNombre());
-
-        admin.solicitarReserva(
-                "SUM",
-                "20/12/2025",
-                "21:00",
-                residente
-        );
-
-        System.out.println();
+        admin.solicitarReserva("SUM", "20/12/2025", "21:00", residente);
         System.out.println("Cantidad reservas: " + admin.getReservas().size());
 
-        admin.registrarAcceso(
-                "10:30",
-                "INVITADO",
-                "INGRESO",
-                residente,
-                "Lote 15"
-        );
+        // registrarAcceso con la API nueva (strings, valida)
+        String r = admin.registrarAcceso("10:30", "Residente", "INGRESO", "Juan Perez", "30111222", "L-01");
+        System.out.println("Acceso: " + r);
     }
 }

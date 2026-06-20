@@ -1,5 +1,2 @@
 package modelo.correo;
-
-public class Expensa {
-
-}
+public class Expensa { }

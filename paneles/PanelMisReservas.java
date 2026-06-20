@@ -54,8 +54,17 @@ public class PanelMisReservas extends JPanel {
             JOptionPane.showMessageDialog(this, "Indique la fecha.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        fachada.solicitarReserva((String) cmbEspacio.getSelectedItem(), txtFecha.getText().trim(),
-                (String) cmbHora.getSelectedItem(), sesion.getUsuario());
+        String espacio = (String) cmbEspacio.getSelectedItem();
+        String fecha = txtFecha.getText().trim();
+        String hora = (String) cmbHora.getSelectedItem();
+        // Validacion de solapamiento: ese espacio ya tomado en esa fecha/hora
+        if (fachada.hayConflictoReserva(espacio, fecha, hora)) {
+            JOptionPane.showMessageDialog(this,
+                "Ese espacio ya está reservado para esa fecha y hora. Elegí otro horario.",
+                "Horario no disponible", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        fachada.solicitarReserva(espacio, fecha, hora, sesion.getUsuario());
         txtFecha.setText("");
         refrescar();
         JOptionPane.showMessageDialog(this, "Solicitud de reserva enviada. Queda pendiente de aprobación.");
