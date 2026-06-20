@@ -51,78 +51,53 @@ public class VentanaIngreso extends JFrame {
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(UI.BORDE, 1, true),
                 new EmptyBorder(48, 48, 48, 48)));
-        card.setPreferredSize(new Dimension(460, 580));
-        card.setMaximumSize(new Dimension(460, 580));
+        card.setPreferredSize(new Dimension(460, 500));
+        card.setMaximumSize(new Dimension(460, 500));
 
         JLabel bienv = new JLabel("Bienvenido de nuevo");
         bienv.setFont(new Font("Segoe UI", Font.BOLD, 26));
         bienv.setForeground(UI.TEXTO);
         bienv.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JLabel sub = new JLabel("Ingresá tus datos para acceder al sistema.");
+        JLabel sub = new JLabel("Ingresá tu usuario y contraseña.");
         sub.setFont(UI.BODY);
         sub.setForeground(UI.TEXTO_SUAVE);
         sub.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         Dimension campo = new Dimension(Integer.MAX_VALUE, 44);
-        JComboBox<String> roles = new JComboBox<>(new String[]{"Administrador", "Guardia", "Residente"});
-        roles.setMaximumSize(campo); roles.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        // Selector de residente (solo visible si el rol es Residente)
-        JLabel lblResidente = etiqueta("RESIDENTE");
-        JComboBox<Usuario> residentes = new JComboBox<>();
-        for (Usuario u : fachada.getResidentes()) residentes.addItem(u);
-        residentes.setRenderer(new DefaultListCellRenderer() {
-            public Component getListCellRendererComponent(JList<?> l, Object v, int i, boolean s, boolean f) {
-                super.getListCellRendererComponent(l, v, i, s, f);
-                if (v instanceof Usuario u) setText(u.getNombre());
-                return this;
-            }
-        });
-        residentes.setMaximumSize(campo); residentes.setAlignmentX(Component.LEFT_ALIGNMENT);
-
         JTextField usuario = new JTextField(); usuario.setMaximumSize(campo); usuario.setAlignmentX(Component.LEFT_ALIGNMENT);
         JPasswordField pass = new JPasswordField(); pass.setMaximumSize(campo); pass.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JButton ingresar = UI.boton("Ingresar a la cuenta", UI.PRIMARIO);
-        ingresar.setMaximumSize(campo); ingresar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // El selector de residente solo aparece cuando el rol es "Residente"
-        Runnable actualizarVisibilidad = () -> {
-            boolean esResidente = "Residente".equals(roles.getSelectedItem());
-            lblResidente.setVisible(esResidente);
-            residentes.setVisible(esResidente);
-        };
-        roles.addActionListener(e -> actualizarVisibilidad.run());
+        JButton ingresar = UI.boton("Ingresar", UI.PRIMARIO);
+        ingresar.setMaximumSize(campo); ingresar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         card.add(bienv);
         card.add(Box.createRigidArea(new Dimension(0, 6)));
         card.add(sub);
         card.add(Box.createRigidArea(new Dimension(0, 28)));
-        card.add(etiqueta("TIPO DE USUARIO")); card.add(Box.createRigidArea(new Dimension(0, 6))); card.add(roles);
-        card.add(Box.createRigidArea(new Dimension(0, 16)));
-        card.add(lblResidente); card.add(Box.createRigidArea(new Dimension(0, 6))); card.add(residentes);
-        card.add(Box.createRigidArea(new Dimension(0, 16)));
         card.add(etiqueta("USUARIO")); card.add(Box.createRigidArea(new Dimension(0, 6))); card.add(usuario);
         card.add(Box.createRigidArea(new Dimension(0, 16)));
         card.add(etiqueta("CONTRASEÑA")); card.add(Box.createRigidArea(new Dimension(0, 6))); card.add(pass);
         card.add(Box.createRigidArea(new Dimension(0, 28)));
         card.add(ingresar);
 
-        actualizarVisibilidad.run();
-
         der.add(card);
         add(izq);
         add(der);
 
         ingresar.addActionListener(e -> {
-            if (usuario.getText().isBlank() || new String(pass.getPassword()).isBlank()) {
-                JOptionPane.showMessageDialog(this, "Complete usuario y contraseña.", "Error de Acceso", JOptionPane.ERROR_MESSAGE);
+            String u = usuario.getText().trim();
+            String p = new String(pass.getPassword());
+            if (u.isBlank() || p.isBlank()) {
+                JOptionPane.showMessageDialog(this, "Complete usuario y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            String rol = (String) roles.getSelectedItem();
-            Usuario logueado = "Residente".equals(rol) ? (Usuario) residentes.getSelectedItem() : null;
-            Sesion sesion = new Sesion(rol, logueado);
-
-            JFrame dash = switch (rol) {
+            Usuario logueado = fachada.autenticar(u, p);
+            if (logueado == null) {
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Error de Acceso", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Sesion sesion = new Sesion(logueado);
+            JFrame dash = switch (logueado.getRol()) {
                 case "Administrador" -> new DashboardAdmin(fachada, sesion);
                 case "Guardia" -> new DashboardGuardia(fachada, sesion);
                 default -> new DashboardResidente(fachada, sesion);

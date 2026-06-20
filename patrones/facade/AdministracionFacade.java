@@ -13,28 +13,61 @@ import modelo.espacios.Lote;
 import modelo.espacios.Reserva;
 import modelo.solicitudes.IncidenteSeguridad;
 import modelo.solicitudes.Reclamo;
+import modelo.usuarios.Propietario;
 import patrones.factory.SolicitudFactory;
 import patrones.strategy.CanalInterno;
 import patrones.strategy.Notificacion;
 import repositorio.RepositorioReservas;
-import repositorio.RepositorioResidentes;
 import repositorio.RepositorioSolicitudes;
+import repositorio.RepositorioUsuarios;
 
 public class AdministracionFacade {
 
     private SolicitudFactory solicitudFactory;
     private Barrio barrio;
-    private RepositorioResidentes repoResidentes;
+    private RepositorioUsuarios repoUsuarios;
     private RepositorioSolicitudes repoSolicitudes;
     private RepositorioReservas repoReservas;
 
     public AdministracionFacade(Barrio barrio) {
         this.barrio = barrio;
         this.solicitudFactory = new SolicitudFactory();
-        this.repoResidentes = new RepositorioResidentes(barrio);
+        this.repoUsuarios = new RepositorioUsuarios(barrio);
         this.repoSolicitudes = new RepositorioSolicitudes();
         this.repoReservas = new RepositorioReservas();
     }
+
+    // ---------- AUTENTICACION ----------
+    public Usuario autenticar(String username, String password) {
+        return repoUsuarios.autenticar(username, password);
+    }
+
+    public boolean existeUsername(String username) {
+        return repoUsuarios.existeUsername(username);
+    }
+
+    // Registra un nuevo residente con sus credenciales. Devuelve el residente creado.
+    public Usuario registrarResidente(String nombre, String dni, int nroLote, String username, String password) {
+        // Reusa el lote si existe en el barrio, si no lo crea y lo agrega
+        Lote lote = null;
+        for (Lote l : barrio.getLotes())
+            if (l.getNumero() == nroLote) { lote = l; break; }
+        if (lote == null) {
+            lote = new Lote(nroLote, "Activo");
+            barrio.agregarLote(lote);
+        }
+
+        int cod = repoUsuarios.getResidentes().size() + 1;
+        Propietario nuevo = new Propietario(cod, lote, nombre, dni, "", "");
+        nuevo.setUsername(username);
+        nuevo.setPassword(password);
+        nuevo.setRol("Residente");
+        repoUsuarios.agregar(nuevo);
+        System.out.println("[REGISTRO] Nuevo residente: " + nombre + " (usuario: " + username + ")");
+        return nuevo;
+    }
+
+    public List<Usuario> getResidentes() { return repoUsuarios.getResidentes(); }
 
     // ---------- RECLAMOS ----------
     public Reclamo gestionarReclamo(String asunto, String descripcion, Prioridad prioridad, Usuario solicitante) {
@@ -45,7 +78,7 @@ public class AdministracionFacade {
         Notificacion notificacion = new Notificacion(new CanalInterno());
         reclamo.agregar(notificacion);
         repoSolicitudes.agregar(reclamo);
-        System.out.println("[SISTEMA] Nuevo reclamo: " + asunto + " (" + prioridad + ") por " + reclamo.getNombreSolicitante());
+        System.out.println("[SISTEMA] Reclamo: " + asunto + " por " + reclamo.getNombreSolicitante());
         return reclamo;
     }
 
@@ -57,15 +90,12 @@ public class AdministracionFacade {
         Notificacion notificacion = new Notificacion(new CanalInterno());
         inc.agregar(notificacion);
         repoSolicitudes.agregar(inc);
-        System.out.println("[SEGURIDAD] Incidente nivel " + nivel);
+        System.out.println("[SEGURIDAD] Incidente nivel " + nivel + " por " + inc.getNombreSolicitante());
         return inc;
     }
 
     public void avanzarSolicitud(Solicitud s) { s.getEstado().avanzarSolicitud(s); }
-
     public List<Solicitud> getSolicitudes() { return repoSolicitudes.getSolicitudes(); }
-
-    // Solo las que NO estan resueltas (las resueltas quedan en el repo, fuera de la vista)
     public List<Solicitud> getSolicitudesActivas() {
         List<Solicitud> activas = new ArrayList<>();
         for (Solicitud s : repoSolicitudes.getSolicitudes())
@@ -73,14 +103,7 @@ public class AdministracionFacade {
         return activas;
     }
 
-    // ---------- RESIDENTES ----------
-    public void registrarResidente(Usuario residente) {
-        repoResidentes.agregar(residente);
-        System.out.println("[REGISTRO] Residente: " + residente.getNombre());
-    }
-    public List<Usuario> getResidentes() { return repoResidentes.getResidentes(); }
-
-    // ---------- ACCESOS (ingreso y egreso) ----------
+    // ---------- ACCESOS ----------
     public Ingreso registrarAcceso(String hora, String tipo, String movimiento, Usuario persona, String destino) {
         Ingreso acceso = new Ingreso(hora, tipo, movimiento, persona, destino);
         System.out.println("[ACCESO] " + movimiento + " - " + tipo + " hacia " + destino + " a las " + hora);
@@ -91,14 +114,14 @@ public class AdministracionFacade {
     public Reserva solicitarReserva(String espacio, String fecha, String hora, Usuario solicitante) {
         Reserva r = new Reserva(espacio, fecha, hora, solicitante);
         repoReservas.agregar(r);
-        System.out.println("[RESERVA] " + espacio + " " + fecha + " " + hora + " -> PENDIENTE");
+        System.out.println("[RESERVA] " + espacio + " " + fecha + " -> PENDIENTE por " + r.getNombreSolicitante());
         return r;
     }
     public void aceptarReserva(Reserva r) { r.confirmar(); System.out.println("[RESERVA] #" + r.getId() + " CONFIRMADA"); }
     public void rechazarReserva(Reserva r) { r.cancelar(); System.out.println("[RESERVA] #" + r.getId() + " CANCELADA"); }
     public List<Reserva> getReservas() { return repoReservas.getReservas(); }
 
-    // ---------- BARRIO / LOTES ----------
+    // ---------- BARRIO ----------
     public Barrio getBarrio() { return barrio; }
     public List<Lote> getLotes() { return barrio.getLotes(); }
 }
