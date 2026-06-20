@@ -81,7 +81,7 @@ public class DashboardGuardia extends JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea cerrar sesión?", "Salir", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 this.dispose(); 
-                new VentanaIngreso().setVisible(true); 
+                new VentanaIngreso(fachada).setVisible(true);
                 System.exit(0);
             }
         });

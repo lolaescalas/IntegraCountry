@@ -1,6 +1,6 @@
 package modelo.espacios;
 
-public class Reserva {
+public class Reserva implements Cancelable {
 
     private String fecha;
     private String horario;
@@ -15,6 +15,7 @@ public class Reserva {
         this.estado = "ACTIVA";       
     }
 
+    @Override
     public void cancelar() {
         this.estado = "CANCELADA";
         this.espacio.setDisponible(true);
