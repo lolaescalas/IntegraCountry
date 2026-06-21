@@ -247,6 +247,11 @@ public class AdministracionFacade {
         return nuevo;
     }
 
+    public void agregarMultaAExpensa(Expensa e, double monto) {
+        e.agregarMulta(monto);
+        System.out.println("[EXPENSAS] Multa de $" + (int) monto + " aplicada al lote " + e.getLote().getEtiqueta());
+    }
+
     private Usuario buscarResidentePorDni(String dni) {
         for (Usuario u : repoUsuarios.getResidentes())
             if (dni.equals(u.getDni())) return u;
