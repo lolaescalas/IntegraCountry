@@ -19,4 +19,3 @@ public class Residente extends Usuario {
     public Lote getLote() {
         return lote; }
 }
-
