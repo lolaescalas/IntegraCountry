@@ -28,7 +28,6 @@ public class PanelRegistroAccesos extends JPanel {
         setBackground(UI.FONDO);
         setBorder(UI.marcoPanel());
 
-        // ---------- Formulario ----------
         JPanel form = UI.card(new GridBagLayout());
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(8, 8, 8, 8);
@@ -41,7 +40,7 @@ public class PanelRegistroAccesos extends JPanel {
         cmbTipo = new JComboBox<>(new String[]{"Residente", "Visita", "Proveedor", "Delivery"});
         cmbMovimiento = new JComboBox<>(new String[]{"INGRESO", "EGRESO"});
 
-        // Cuando el guardia termina de tipear el DNI, intenta autocompletar lote y nombre
+
         txtDni.addFocusListener(new FocusAdapter() {
             @Override public void focusLost(FocusEvent e) { autocompletarPorDni(); }
         });
@@ -67,7 +66,7 @@ public class PanelRegistroAccesos extends JPanel {
         g.gridx=2; g.gridy=3; g.gridwidth=2; g.fill=GridBagConstraints.NONE; g.anchor=GridBagConstraints.EAST;
         form.add(botones, g);
 
-        // ---------- Tabla de visitas autorizadas (lo que el guardia consulta) ----------
+
         String[] colsAut = {"Nombre", "DNI", "Tipo", "Lote", "Autorizada por"};
         modeloAutorizadas = new DefaultTableModel(colsAut, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         JPanel panelAut = new JPanel(new BorderLayout(0, 8));
@@ -77,7 +76,7 @@ public class PanelRegistroAccesos extends JPanel {
         panelAut.add(lblAut, BorderLayout.NORTH);
         panelAut.add(UI.tabla(new JTable(modeloAutorizadas)), BorderLayout.CENTER);
 
-        // ---------- Tabla de accesos registrados ----------
+
         String[] colsAcc = {"Hora", "Movimiento", "Tipo", "Nombre", "DNI", "Lote"};
         modeloAccesos = new DefaultTableModel(colsAcc, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         JPanel panelAcc = new JPanel(new BorderLayout(0, 8));
@@ -105,7 +104,6 @@ public class PanelRegistroAccesos extends JPanel {
 
     private JLabel lbl(String t) { JLabel l = new JLabel(t); l.setFont(UI.BOLD); return l; }
 
-    // Si hay una autorizacion vigente para ese DNI, completa nombre y lote solos
     private void autocompletarPorDni() {
         String dni = txtDni.getText().trim();
         if (dni.isEmpty()) return;
@@ -143,14 +141,13 @@ public class PanelRegistroAccesos extends JPanel {
     }
 
     private void refrescar() {
-        // Visitas autorizadas vigentes (con su lote, para que el guardia sepa adonde van)
         modeloAutorizadas.setRowCount(0);
         for (Autorizacion a : fachada.getAutorizacionesVigentes()) {
             modeloAutorizadas.addRow(new Object[]{
                     a.getNombreVisita(), a.getDniVisita(), a.getTipo(),
                     a.getLote().getEtiqueta(), a.getNombreAutorizante() });
         }
-        // Historial de accesos
+        
         modeloAccesos.setRowCount(0);
         for (Ingreso i : fachada.getAccesos()) {
             modeloAccesos.addRow(new Object[]{ i.getHora(), i.getMovimiento(), i.getTipo(),

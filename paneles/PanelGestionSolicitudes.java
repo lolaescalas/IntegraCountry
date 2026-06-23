@@ -54,11 +54,10 @@ public class PanelGestionSolicitudes extends JPanel {
             return;
         }
         Solicitud s = filas.get(fila);
-        fachada.avanzarSolicitud(s);   // si pasa a Resuelta, desaparece de la vista al refrescar
+        fachada.avanzarSolicitud(s);
         refrescar();
     }
 
-    // Solo solicitudes activas (las resueltas quedan en el repositorio pero no se muestran)
     private void refrescar() {
         modelo.setRowCount(0);
         filas = fachada.getSolicitudesActivas();

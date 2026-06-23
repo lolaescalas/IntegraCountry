@@ -13,7 +13,6 @@ public class FacadeTest {
         barrio.agregarLote(new Lote(2, "Activo"));
         AdministracionFacade admin = new AdministracionFacade(barrio);
 
-        // Registrar residente con la API nueva (devuelve el Usuario creado)
         Usuario residente = admin.registrarResidente("Juan Perez", "30111222", 1, "juanp", "clave");
         System.out.println("\nCantidad residentes: " + admin.getResidentes().size());
 
@@ -27,8 +26,8 @@ public class FacadeTest {
         admin.solicitarReserva("SUM", "20/12/2025", "21:00", residente);
         System.out.println("Cantidad reservas: " + admin.getReservas().size());
 
-        // registrarAcceso con la API nueva (strings, valida)
+
         String r = admin.registrarAcceso("10:30", "Residente", "INGRESO", "Juan Perez", "30111222", "L-01");
         System.out.println("Acceso: " + r);
-    }
+}
 }

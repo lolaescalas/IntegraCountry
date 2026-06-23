@@ -6,9 +6,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Menu lateral reutilizable. Antes los tres dashboards repetian este codigo casi identico.
- */
+
 public final class Sidebar {
 
     private Sidebar() {}

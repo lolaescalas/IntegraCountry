@@ -8,8 +8,12 @@ import modelo.expensas.Expensa;
 
 public class RepositorioExpensas {
     private List<Expensa> expensas = new ArrayList<>();
-    public void agregar(Expensa e) { expensas.add(e); }
-    public List<Expensa> getExpensas() { return expensas; }
+
+    public void agregar(Expensa e) {
+        expensas.add(e); }
+        
+    public List<Expensa> getExpensas() {
+        return expensas; }
 
     public List<Expensa> getPorLote(Lote lote) {
         List<Expensa> res = new ArrayList<>();

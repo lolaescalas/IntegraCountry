@@ -87,7 +87,6 @@ public class PanelMisReclamos extends JPanel {
         JOptionPane.showMessageDialog(this, "Reclamo registrado correctamente.");
     }
 
-    // Solo muestra los reclamos del residente logueado
     private void refrescar() {
         modelo.setRowCount(0);
         for (Solicitud s : fachada.getSolicitudes()) {

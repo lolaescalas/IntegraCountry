@@ -6,14 +6,13 @@ import modelo.abstractas.Usuario;
 public class Ingreso {
     private LocalDate fecha;
     private String hora;
-    private String tipo;          // Residente, Visita, Proveedor, Delivery
-    private String movimiento;    // INGRESO / EGRESO
-    private Usuario persona;       // puede ser null (visitas no son usuarios del sistema)
+    private String tipo;
+    private String movimiento;
+    private Usuario persona;
     private String nombrePersona;
     private String dniPersona;
     private String destino;
 
-    // Constructor original (compatibilidad con codigo que pasa un Usuario)
     public Ingreso(String hora, String tipo, String movimiento, Usuario persona, String destino) {
         this.fecha = LocalDate.now();
         this.hora = hora;
@@ -25,7 +24,6 @@ public class Ingreso {
         this.destino = destino;
     }
 
-    // Constructor nuevo: nombre y dni como texto (para visitas sin usuario)
     public Ingreso(String hora, String tipo, String movimiento, String nombrePersona, String dniPersona, String destino) {
         this.fecha = LocalDate.now();
         this.hora = hora;
@@ -37,12 +35,27 @@ public class Ingreso {
         this.destino = destino;
     }
 
-    public LocalDate getFecha() { return fecha; }
-    public String getHora() { return hora; }
-    public String getTipo() { return tipo; }
-    public String getMovimiento() { return movimiento; }
-    public Usuario getPersona() { return persona; }
-    public String getNombrePersona() { return nombrePersona; }
-    public String getDniPersona() { return dniPersona; }
-    public String getDestino() { return destino; }
+    public LocalDate getFecha() {
+        return fecha; }
+
+    public String getHora() {
+        return hora; }
+
+    public String getTipo() {
+        return tipo; }
+
+    public String getMovimiento() {
+        return movimiento; }
+
+    public Usuario getPersona() {
+        return persona; }
+
+    public String getNombrePersona() {
+        return nombrePersona; }
+
+    public String getDniPersona() {
+        return dniPersona; }
+
+    public String getDestino() {
+        return destino; }
 }

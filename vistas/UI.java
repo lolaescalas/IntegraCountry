@@ -7,10 +7,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 
-/**
- * Paleta y helpers de estilo centralizados.
- * Antes cada panel repetia colores y metodos de estilo; ahora viven aca (Pure Fabrication para la UI).
- */
 public final class UI {
 
     private UI() {}

@@ -10,8 +10,12 @@ public class RepositorioAutorizaciones {
 
     private List<Autorizacion> autorizaciones = new ArrayList<>();
 
-    public void agregar(Autorizacion a) { autorizaciones.add(a); }
-    public List<Autorizacion> getAutorizaciones() { return autorizaciones; }
+    public void agregar(Autorizacion a) {
+        autorizaciones.add(a); }
+
+    public List<Autorizacion> getAutorizaciones() {
+        return autorizaciones; }
+
 
     public List<Autorizacion> getPorResidente(Usuario residente) {
         List<Autorizacion> res = new ArrayList<>();
@@ -20,7 +24,6 @@ public class RepositorioAutorizaciones {
         return res;
     }
 
-    // Todas las autorizaciones que todavia no se usaron (para que el guardia las vea)
     public List<Autorizacion> getVigentes() {
         List<Autorizacion> res = new ArrayList<>();
         for (Autorizacion a : autorizaciones)
@@ -28,7 +31,6 @@ public class RepositorioAutorizaciones {
         return res;
     }
 
-    // Busca vigente por DNI y lote (compara DNI normalizado, sin espacios)
     public Autorizacion buscarVigente(String dni, int nroLote) {
         String d = normalizar(dni);
         for (Autorizacion a : autorizaciones) {
@@ -41,7 +43,6 @@ public class RepositorioAutorizaciones {
         return null;
     }
 
-    // Busca vigente solo por DNI (sin importar lote) -> sirve para autocompletar el lote
     public Autorizacion buscarVigentePorDni(String dni) {
         String d = normalizar(dni);
         for (Autorizacion a : autorizaciones)

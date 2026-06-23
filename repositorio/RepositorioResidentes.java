@@ -14,7 +14,6 @@ public class RepositorioResidentes {
     private List<Usuario> residentes = new ArrayList<>();
 
     public RepositorioResidentes(Barrio barrio) {
-        // Toma los lotes que ya existen en el barrio (no crea lotes sueltos)
         List<Lote> lotes = barrio.getLotes();
         if (lotes.size() >= 3) {
             residentes.add(new Propietario(1, lotes.get(0), "Juan Perez", "11222333", "juan@mail.com", "1111111111"));
@@ -23,6 +22,10 @@ public class RepositorioResidentes {
         }
     }
 
-    public void agregar(Usuario residente) { residentes.add(residente); }
-    public List<Usuario> getResidentes() { return residentes; }
+    public void agregar(Usuario residente) {
+        residentes.add(residente); }
+
+    public List<Usuario> getResidentes() {
+        return residentes; }
+        
 }

@@ -1,21 +1,40 @@
 package modelo.espacios;
 import java.util.ArrayList;
 import java.util.List;
+
 public class Barrio {
+
     private String nombre;
     private String direccion;
     private List<Lote> lotes = new ArrayList<>();
-    public Barrio(String nombre, String direccion) { this.nombre = nombre; this.direccion = direccion; }
-    public void agregarLote(Lote lote) { lotes.add(lote); }
+
+    public Barrio(String nombre, String direccion) {
+        this.nombre = nombre;
+        this.direccion = direccion; }
+
+    public void agregarLote(Lote lote) {
+        lotes.add(lote); }
+
     public Lote buscarLote(int numero) {
         for (Lote l : lotes) if (l.getNumero() == numero) return l;
         return null;
     }
-    public String getNombre() { return nombre; }
-    public String getDireccion() { return direccion; }
-    public List<Lote> getLotes() { return lotes; }
-    public Barrio(String nombre) { this.nombre = nombre; }
+
+    public String getNombre() {
+        return nombre; }
+
+    public String getDireccion() {
+        return direccion; }
+
+    public List<Lote> getLotes() {
+        return lotes; }
+
+    public Barrio(String nombre) {
+        this.nombre = nombre; }
+
     public Barrio(String nombre, String direccion, List<Lote> lotes) {
-        this.nombre = nombre; this.direccion = direccion; this.lotes = lotes;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.lotes = lotes;
     }
 }

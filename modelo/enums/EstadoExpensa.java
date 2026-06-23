@@ -1,2 +1,4 @@
 package modelo.enums;
-public enum EstadoExpensa { PENDIENTE, PAGA, VENCIDA }
+public enum EstadoExpensa {
+    
+    PENDIENTE, PAGA, VENCIDA }

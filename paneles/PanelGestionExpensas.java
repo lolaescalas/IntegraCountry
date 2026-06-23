@@ -13,8 +13,8 @@ public class PanelGestionExpensas extends JPanel {
 
     private final AdministracionFacade fachada;
     private DefaultTableModel modelo;
-    private JTable tabla;              // CAMBIO: ahora guardamos la tabla como campo
-    private List<Expensa> filas;       // CAMBIO: guardamos las expensas que se ven, para saber cuál se seleccionó
+    private JTable tabla;
+    private List<Expensa> filas;
 
     public PanelGestionExpensas(AdministracionFacade fachada) {
         this.fachada = fachada;
@@ -25,7 +25,6 @@ public class PanelGestionExpensas extends JPanel {
         JButton btnGenerar = UI.boton("Generar Expensas del Mes", UI.PRIMARIO);
         btnGenerar.addActionListener(e -> generar());
 
-        // CAMBIO: botón nuevo para aplicar multa
         JButton btnMulta = UI.boton("Agregar Multa", UI.PELIGRO);
         btnMulta.addActionListener(e -> agregarMulta());
 
@@ -33,7 +32,7 @@ public class PanelGestionExpensas extends JPanel {
         top.setOpaque(false);
         top.add(UI.titulo("Control de Expensas"), BorderLayout.WEST);
 
-        // CAMBIO: los dos botones juntos a la derecha
+
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         botones.setOpaque(false);
         botones.add(btnMulta);
@@ -42,11 +41,11 @@ public class PanelGestionExpensas extends JPanel {
 
         String[] cols = {"Lote", "Período", "Monto Base", "Multas", "Total", "Estado"};
         modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
-        tabla = new JTable(modelo);                                  // CAMBIO
-        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // CAMBIO: se puede seleccionar una fila
+        tabla = new JTable(modelo);
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         add(top, BorderLayout.NORTH);
-        add(UI.tabla(tabla), BorderLayout.CENTER);                   // CAMBIO: usamos la tabla guardada
+        add(UI.tabla(tabla), BorderLayout.CENTER);
         refrescar();
     }
 
@@ -57,36 +56,41 @@ public class PanelGestionExpensas extends JPanel {
         int op = JOptionPane.showConfirmDialog(this, form, "Generar Expensas", JOptionPane.OK_CANCEL_OPTION);
         if (op != JOptionPane.OK_OPTION) return;
         double base;
+
         try { base = Double.parseDouble(monto.getText().trim()); }
         catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "El monto debe ser un número.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         int creadas = fachada.generarExpensasDelMes(periodo.getText().trim(), base);
         refrescar();
         JOptionPane.showMessageDialog(this, "Se generaron " + creadas + " expensas para " + periodo.getText().trim() + ".");
     }
 
-    // CAMBIO: método nuevo completo
     private void agregarMulta() {
         int fila = tabla.getSelectedRow();
         if (fila == -1) {
             JOptionPane.showMessageDialog(this, "Seleccione una expensa de la tabla primero.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         Expensa e = filas.get(fila);
         String valor = JOptionPane.showInputDialog(this, "Monto de la multa para el lote " + e.getLote().getEtiqueta() + ":", "Agregar Multa", JOptionPane.PLAIN_MESSAGE);
-        if (valor == null) return; // canceló
+        if (valor == null) return;
         double monto;
+
         try { monto = Double.parseDouble(valor.trim()); }
         catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "El monto debe ser un número.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         if (monto <= 0) {
             JOptionPane.showMessageDialog(this, "El monto debe ser mayor a cero.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         fachada.agregarMultaAExpensa(e, monto);
         refrescar();
         JOptionPane.showMessageDialog(this, "Multa aplicada. El total se actualizó.");
@@ -94,7 +98,7 @@ public class PanelGestionExpensas extends JPanel {
 
     private void refrescar() {
         modelo.setRowCount(0);
-        filas = fachada.getExpensas();   // CAMBIO: guardamos la lista para la selección
+        filas = fachada.getExpensas();
         for (Expensa e : filas) {
             modelo.addRow(new Object[]{
                     e.getLote().getEtiqueta(), e.getPeriodo(),

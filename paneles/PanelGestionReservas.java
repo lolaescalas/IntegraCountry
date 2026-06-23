@@ -29,7 +29,7 @@ public class PanelGestionReservas extends JPanel {
         String[] cols = {"ID", "Espacio", "Fecha", "Hora", "Solicitante", "Estado"};
         modelo = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
         tabla = new JTable(modelo);
-        // Garantiza que se pueda seleccionar una fila
+        
         tabla.setRowSelectionAllowed(true);
         tabla.setColumnSelectionAllowed(false);
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -39,6 +39,7 @@ public class PanelGestionReservas extends JPanel {
         JButton btnAceptar = UI.boton("Aceptar", UI.EXITO);
         JButton btnRechazar = UI.boton("Rechazar", UI.PELIGRO);
         JButton btnRefrescar = UI.boton("Refrescar", UI.TEXTO_SUAVE);
+        
         acciones.add(new JLabel("Reserva seleccionada:"));
         acciones.add(btnAceptar); acciones.add(btnRechazar); acciones.add(btnRefrescar);
         btnAceptar.addActionListener(e -> decidir(true));

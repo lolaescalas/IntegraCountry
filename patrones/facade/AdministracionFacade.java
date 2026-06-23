@@ -49,13 +49,14 @@ public class AdministracionFacade {
         this.repoAutorizaciones = new RepositorioAutorizaciones();
     }
 
-    // ---------- AUTENTICACION ----------
     public Usuario autenticar(String username, String password) {
         return repoUsuarios.autenticar(username, password);
     }
+
     public boolean existeUsername(String username) {
         return repoUsuarios.existeUsername(username);
     }
+
     public Usuario registrarResidente(String nombre, String dni, int nroLote, String username, String password) {
         Lote lote = buscarOCrearLote(nroLote);
         int cod = repoUsuarios.getResidentes().size() + 1;
@@ -67,9 +68,11 @@ public class AdministracionFacade {
         System.out.println("[REGISTRO] Residente: " + nombre + " (usuario: " + username + ")");
         return nuevo;
     }
-    public List<Usuario> getResidentes() { return repoUsuarios.getResidentes(); }
 
-    // ---------- RECLAMOS ----------
+    public List<Usuario> getResidentes() {
+        return repoUsuarios.getResidentes(); }
+
+
     public Reclamo gestionarReclamo(String asunto, String descripcion, Prioridad prioridad, Usuario solicitante) {
         Reclamo reclamo = (Reclamo) solicitudFactory.crearReclamo(prioridad);
         reclamo.setAsunto(asunto);
@@ -82,7 +85,7 @@ public class AdministracionFacade {
         return reclamo;
     }
 
-    // ---------- INCIDENTES ----------
+
     public IncidenteSeguridad reportarIncidente(String descripcion, NivelRiesgo nivel, Usuario solicitante) {
         IncidenteSeguridad inc = (IncidenteSeguridad) solicitudFactory.crearIncidente(nivel);
         inc.setDescripcion(descripcion);
@@ -94,8 +97,12 @@ public class AdministracionFacade {
         return inc;
     }
 
-    public void avanzarSolicitud(Solicitud s) { s.getEstado().avanzarSolicitud(s); }
-    public List<Solicitud> getSolicitudes() { return repoSolicitudes.getSolicitudes(); }
+    public void avanzarSolicitud(Solicitud s) {
+        s.getEstado().avanzarSolicitud(s); }
+
+    public List<Solicitud> getSolicitudes() {
+        return repoSolicitudes.getSolicitudes(); }
+
     public List<Solicitud> getSolicitudesActivas() {
         List<Solicitud> activas = new ArrayList<>();
         for (Solicitud s : repoSolicitudes.getSolicitudes())
@@ -103,7 +110,6 @@ public class AdministracionFacade {
         return activas;
     }
 
-    // ---------- AUTORIZACION DE VISITAS (la crea el residente) ----------
     public Autorizacion autorizarVisita(String nombreVisita, String dniVisita, String tipo, Usuario residente) {
         Lote lote = loteDe(residente);
         Autorizacion a = new Autorizacion(nombreVisita, dniVisita, tipo, lote, residente);
@@ -111,25 +117,19 @@ public class AdministracionFacade {
         System.out.println("[AUTORIZACION] " + residente.getNombre() + " autorizo a " + nombreVisita + " (" + tipo + ")");
         return a;
     }
+
     public List<Autorizacion> getAutorizacionesDe(Usuario residente) {
         return repoAutorizaciones.getPorResidente(residente);
     }
-    // Todas las autorizaciones vigentes (para que el guardia las vea)
+
     public List<Autorizacion> getAutorizacionesVigentes() {
         return repoAutorizaciones.getVigentes();
     }
-    // Busca una autorizacion vigente por DNI -> el guardia autocompleta el lote
+
     public Autorizacion buscarAutorizacionPorDni(String dni) {
         return repoAutorizaciones.buscarVigentePorDni(dni);
     }
 
-    // ---------- REGISTRO DE ACCESO CON VALIDACION (lo hace el guardia) ----------
-    /**
-     * Devuelve un mensaje de resultado. Si el acceso es valido, lo guarda.
-     * Reglas:
-     *  - RESIDENTE: el DNI debe existir como residente del sistema.
-     *  - VISITA/PROVEEDOR/DELIVERY: debe haber una autorizacion vigente para ese DNI y lote.
-     */
     public String registrarAcceso(String hora, String tipo, String movimiento, String nombre, String dni, String etiquetaLote) {
         int nroLote = numeroDeEtiqueta(etiquetaLote);
 
@@ -144,9 +144,9 @@ public class AdministracionFacade {
             guardarAcceso(hora, tipo, movimiento, res.getNombre(), dni, etiquetaLote);
             return "OK: acceso de residente " + res.getNombre() + " registrado.";
         } else {
-            // Visita / Proveedor / Delivery
+
             if ("EGRESO".equals(movimiento)) {
-                // El egreso no requiere autorizacion, pero si un ingreso previo
+
                 if (!tieneIngresoPrevio(dni)) {
                     return "RECHAZADO: no hay un ingreso previo registrado para el DNI " + dni + ".";
                 }
@@ -171,10 +171,10 @@ public class AdministracionFacade {
 
     public List<Ingreso> getAccesos() { return repoAccesos.getAccesos(); }
 
-    // true si ese DNI tiene un INGRESO sin su EGRESO correspondiente (esta adentro)
+
     private boolean tieneIngresoPrevio(String dni) {
         String d = dni == null ? "" : dni.trim().replaceAll("\\s+", "");
-        int balance = 0; // +1 ingreso, -1 egreso
+        int balance = 0;
         for (Ingreso i : repoAccesos.getAccesos()) {
             String id = i.getDniPersona() == null ? "" : i.getDniPersona().trim().replaceAll("\\s+", "");
             if (id.equals(d)) {
@@ -185,7 +185,7 @@ public class AdministracionFacade {
         return balance > 0;
     }
 
-    // ---------- RESERVAS ----------
+
     public Reserva solicitarReserva(String espacio, String fecha, String hora, Usuario solicitante) {
         Reserva r = new Reserva(espacio, fecha, hora, solicitante);
         repoReservas.agregar(r);
@@ -193,7 +193,7 @@ public class AdministracionFacade {
         return r;
     }
 
-    // true si ese espacio ya esta tomado (PENDIENTE o CONFIRMADA) en esa fecha y hora
+
     public boolean hayConflictoReserva(String espacio, String fecha, String hora) {
         for (Reserva r : repoReservas.getReservas()) {
             if (!"CANCELADA".equals(r.getEstado())
@@ -209,8 +209,7 @@ public class AdministracionFacade {
     public void rechazarReserva(Reserva r) { r.cancelar(); }
     public List<Reserva> getReservas() { return repoReservas.getReservas(); }
 
-    // ---------- EXPENSAS ----------
-    // Genera una expensa del periodo para cada lote del barrio (las que no existan)
+
     public int generarExpensasDelMes(String periodo, double montoBase) {
         int creadas = 0;
         for (Lote l : barrio.getLotes()) {
@@ -235,7 +234,7 @@ public class AdministracionFacade {
 
     public void pagarExpensa(Expensa e) { e.pagar(); }
 
-        // ---------- BARRIO / HELPERS ----------
+
     public Barrio getBarrio() { return barrio; }
     public List<Lote> getLotes() { return barrio.getLotes(); }
 
@@ -265,7 +264,6 @@ public class AdministracionFacade {
     }
 
     private int numeroDeEtiqueta(String etiqueta) {
-        // "L-03" -> 3
         try { return Integer.parseInt(etiqueta.replaceAll("[^0-9]", "")); }
         catch (NumberFormatException e) { return -1; }
     }

@@ -57,7 +57,7 @@ public class PanelMisReservas extends JPanel {
         String espacio = (String) cmbEspacio.getSelectedItem();
         String fecha = txtFecha.getText().trim();
         String hora = (String) cmbHora.getSelectedItem();
-        // Validacion de solapamiento: ese espacio ya tomado en esa fecha/hora
+        
         if (fachada.hayConflictoReserva(espacio, fecha, hora)) {
             JOptionPane.showMessageDialog(this,
                 "Ese espacio ya está reservado para esa fecha y hora. Elegí otro horario.",
@@ -70,7 +70,6 @@ public class PanelMisReservas extends JPanel {
         JOptionPane.showMessageDialog(this, "Solicitud de reserva enviada. Queda pendiente de aprobación.");
     }
 
-    // Muestra solo las reservas del residente logueado
     private void refrescar() {
         modelo.setRowCount(0);
         for (Reserva r : fachada.getReservas()) {
